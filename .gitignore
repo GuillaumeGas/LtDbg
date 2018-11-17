@@ -1,0 +1,7 @@
+*~
+*.o
+/.vs/ltdbg/v15
+/LtDbg/Debug
+/.vs/LtDbg/v14
+/LtDbg.VC.db
+/LtDbg.VC.VC.opendb
