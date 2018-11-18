@@ -58,8 +58,14 @@ u8 Com::ReadByte()
 
 	if (success == FALSE)
 	{
-		throw ComException("Com!ReadFile() failed with code " + std::to_string((GetLastError())));
+		throw ComException("Com!ReadFile() failed with code " + std::to_string(GetLastError()));
 	}
 
 	return byte;
+}
+
+void Com::ReadBytes(u8 * buffer, unsigned int bufferSize)
+{
+	for (unsigned int i = 0; i < bufferSize; i++)
+		buffer[i] = ReadByte();
 }

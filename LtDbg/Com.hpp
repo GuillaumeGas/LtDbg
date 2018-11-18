@@ -14,6 +14,7 @@ public:
 	void Connect();
 	void SendByte(u8 byte);
 	u8 ReadByte();
+	void ReadBytes(u8 * buffer, unsigned int bufferSize);
 
 private:
 	std::string _pipeName;

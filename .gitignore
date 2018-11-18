@@ -5,3 +5,5 @@
 /.vs/LtDbg/v14
 /LtDbg.VC.db
 /LtDbg.VC.VC.opendb
+LtDbg/x64/
+x64/
