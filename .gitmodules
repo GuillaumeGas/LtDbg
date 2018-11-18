@@ -1,0 +1,3 @@
+[submodule "udis"]
+	path = udis
+	url = https://github.com/vmt/udis86.git

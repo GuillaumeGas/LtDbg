@@ -35,12 +35,12 @@ void Com::Connect()
 	}
 }
 
-void Com::SendByte(u8 byte)
+void Com::SendByte(byte byte)
 {
 	BOOL success = FALSE;
 	DWORD read = 0;
 
-	success = WriteFile(_pipeHandle, &byte, sizeof(u8), &read, NULL);
+	success = WriteFile(_pipeHandle, &byte, sizeof(byte), &read, NULL);
 
 	if (success == FALSE)
 	{
@@ -48,13 +48,13 @@ void Com::SendByte(u8 byte)
 	}
 }
 
-u8 Com::ReadByte()
+byte Com::ReadByte()
 {
 	BOOL success = FALSE;
 	DWORD read = 0;
-	u8 byte = 0;
+	byte byte = 0;
 
-	success = ReadFile(_pipeHandle, &byte, sizeof(u8), &read, NULL);
+	success = ReadFile(_pipeHandle, &byte, sizeof(byte), &read, NULL);
 
 	if (success == FALSE)
 	{
@@ -64,7 +64,7 @@ u8 Com::ReadByte()
 	return byte;
 }
 
-void Com::ReadBytes(u8 * buffer, unsigned int bufferSize)
+void Com::ReadBytes(byte * buffer, unsigned int bufferSize)
 {
 	for (unsigned int i = 0; i < bufferSize; i++)
 		buffer[i] = ReadByte();

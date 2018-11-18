@@ -4,10 +4,12 @@
 #include "Exceptions.hpp"
 #include "Dbg.hpp"
 
+//#include "..\udis\BuildVS2010\Build\Include\udis86.h"
+#include "..\udis\libudis86\extern.h"
+//#include "..\udis\libudis86\
+
 // Includes all LtKernel header files
 #include "LtKinc/ltkinc.h"
-
-typedef unsigned char u8;
 
 using namespace std;
 
@@ -65,7 +67,7 @@ void CommandManager::CmdConnect()
 	while (1)
 	{
 		_com->SendByte(1);
-		u8 res = _com->ReadByte();
+		byte res = _com->ReadByte();
 		if (res == 1)
 			break;
 	}
@@ -95,12 +97,28 @@ void CommandManager::CmdRegisters()
 	DebugContext context = { 0 };
 
 	_com->SendByte('r');
-	_com->ReadBytes((u8*)&context, sizeof(DebugContext));
+	_com->ReadBytes((byte*)&context, sizeof(DebugContext));
 
 	cout << "eip : " << std::hex << context.eip << endl;
 }
 
 void CommandManager::CmdDisass()
 {
+	byte buffer[20];
+	ud_t ud_obj;
 
+	_com->SendByte('d');
+	_com->ReadBytes(buffer, 20);
+
+	ud_init(&ud_obj);
+	ud_set_input_buffer(&ud_obj, buffer, 20);
+	ud_set_mode(&ud_obj, 64);
+	ud_set_syntax(&ud_obj, UD_SYN_INTEL);
+
+	while (ud_disassemble(&ud_obj)) 
+	{
+		ud_mnemonic_code code = ud_insn_mnemonic(&ud_obj);
+		if (code != UD_Iinvalid)
+			printf("\t%s\n", ud_insn_asm(&ud_obj));
+	}
 }

@@ -3,8 +3,6 @@
 #include <string>
 #include <windows.h>
 
-typedef unsigned char u8;
-
 class Com
 {
 public:
@@ -12,9 +10,9 @@ public:
 	~Com();
 
 	void Connect();
-	void SendByte(u8 byte);
-	u8 ReadByte();
-	void ReadBytes(u8 * buffer, unsigned int bufferSize);
+	void SendByte(byte byte);
+	byte ReadByte();
+	void ReadBytes(byte * buffer, unsigned int bufferSize);
 
 private:
 	std::string _pipeName;

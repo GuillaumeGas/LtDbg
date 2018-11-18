@@ -85,6 +85,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>C:\Users\Guillaume\Documents\Visual Studio 2017\Projects\LtDbg\udis\BuildVS2010\Build\Bin\x64\libudis86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
