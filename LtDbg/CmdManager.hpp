@@ -24,6 +24,7 @@ public:
 	void CmdQuit();
 	void CmdRegisters();
 	void CmdDisass();
+	void CmdStackTrace();
 
 private:
 	Dbg * _dbg;

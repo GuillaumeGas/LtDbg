@@ -1,14 +1,15 @@
 #pragma once
 
-#define COMMANDS_LIST                   \
-	COMMAND(CMD_CONNECT,   "connect")   \
-	COMMAND(CMD_STEP,      "s")         \
-	COMMAND(CMD_CONTINUE,  "c")         \
-	COMMAND(CMD_QUIT,      "q")         \
-	COMMAND(CMD_REGISTERS, "r")		    \
-	COMMAND(CMD_DISASS,    "d")		    \
-	COMMAND(CMD_UNKNOWN,   "<unknown>") \
-	COMMAND(CMD_END,       "<end>" )    \
+#define COMMANDS_LIST                     \
+	COMMAND(CMD_CONNECT,     "connect")   \
+	COMMAND(CMD_STEP,        "p")         \
+	COMMAND(CMD_CONTINUE,    "c")         \
+	COMMAND(CMD_QUIT,        "q")         \
+	COMMAND(CMD_REGISTERS,   "r")		  \
+	COMMAND(CMD_DISASS,      "d")		  \
+	COMMAND(CMD_STACK_TRACE, "s")		  \
+	COMMAND(CMD_UNKNOWN,     "<unknown>") \
+	COMMAND(CMD_END,         "<end>" )    \
 
 enum Command
 {

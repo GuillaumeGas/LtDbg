@@ -84,6 +84,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>C:\Users\Guillaume\Documents\Visual Studio 2017\Projects\LtDbg\udis\BuildVS2010\Build\Bin\x64\libudis86.lib;%(AdditionalDependencies)</AdditionalDependencies>

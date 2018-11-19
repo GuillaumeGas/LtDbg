@@ -1,3 +1,6 @@
 [submodule "udis"]
 	path = udis
 	url = https://github.com/vmt/udis86.git
+[submodule "elfio"]
+	path = elfio
+	url = https://github.com/serge1/ELFIO.git
