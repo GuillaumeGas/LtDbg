@@ -22,11 +22,11 @@ enum RegId
 	REG_EIP,
 
 	REG_CS,
+	REG_SS,
+	REG_DS,
 	REG_GS,
 	REG_FS,
 	REG_ES,
-
-	REG_DS,
 
 	REG_EFLAG,
 
@@ -56,34 +56,31 @@ enum RegTypeId
 class Register
 {
 public:
-	virtual std::string ToString() const;
+	virtual std::string ToString() const = 0;
 
-protected:
-	std::string _name;
-	RegId _id;
-	RegSizeId _sizeId;
-	RegTypeId _type;
+	std::string name;
+	RegId id;
+	RegSizeId sizeId;
+	RegTypeId type;
 };
 
 class Reg8 : public Register
 {
 public:
-	Reg8(std::string & name, u8 value);
+	Reg8(std::string name, u8 value);
 
 	std::string ToString() const;
 
-protected:
 	u8 value;
 };
 
 class Reg16 : public Register
 {
 public:
-	Reg16(std::string & name, u16 value);
+	Reg16(std::string name, u16 value);
 
 	std::string ToString() const;
 
-protected:
 	u16 value;
 };
 
@@ -94,7 +91,6 @@ public:
 
 	std::string ToString() const;
 
-protected:
 	u32 value;
 };
 
@@ -105,7 +101,6 @@ public:
 
 	std::string ToString() const;
 
-protected:
 	unsigned long long value;
 };
 

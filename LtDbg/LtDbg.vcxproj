@@ -124,6 +124,7 @@
     <ClCompile Include="CmdList.cpp" />
     <ClCompile Include="Dbg.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Utils\Registers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdList.hpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="Dbg.hpp" />
     <ClInclude Include="Exceptions.hpp" />
     <ClInclude Include="LtKinc\ltkinc.h" />
+    <ClInclude Include="Utils\Registers.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
