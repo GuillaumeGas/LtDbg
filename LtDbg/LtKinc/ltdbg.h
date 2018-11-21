@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-struct DebugContext
+struct KDebugContext
 {
 	u32 cr3, cr2, cr0;
 	u32 gs, fs, es, ds;
@@ -10,6 +10,4 @@ struct DebugContext
 	u32 eip;
 	u16 cs;
 	u32 eflags;
-} typedef DebugContext;
-
-void DbgInit();
+} typedef KDebugContext;

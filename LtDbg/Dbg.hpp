@@ -2,6 +2,7 @@
 
 #include "Com.hpp"
 #include "CmdManager.hpp"
+#include "CmdList.hpp"
 
 class Dbg
 {

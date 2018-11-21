@@ -4,30 +4,27 @@
 #include <map>
 
 #include "Com.hpp"
+#pragma once
+
 #include "CmdList.hpp"
 
 class Dbg;
+class Command;
 
 class CommandManager
 {
 public:
 	CommandManager(Dbg * dbg, Com * com);
+	~CommandManager();
 
-	std::function<void()> & operator[](Command cmd);
-	std::function<void()> & operator[](const std::string & str);
+	std::function<std::string()> & operator[](CommandId cmd);
+	std::function<std::string()> & operator[](const std::string & str);
 	bool CommandExists(const std::string & command) const;
-	bool CommandExists(Command command) const;
-
-	void CmdConnect();
-	void CmdStep();
-	void CmdContinue();
-	void CmdQuit();
-	void CmdRegisters();
-	void CmdDisass();
-	void CmdStackTrace();
+	bool CommandExists(CommandId command) const;
 
 private:
 	Dbg * _dbg;
 	Com * _com;
-	std::map<Command, std::function<void()> > _commands;
+	Command * _cmd;
+	std::map<CommandId, std::function<std::string()> > _commands;
 };

@@ -30,8 +30,6 @@ void Dbg::Start()
 
 void Dbg::UserCommandLine(CommandManager & cm)
 {
-	string lastStrCmd;
-
 	do
 	{
 		string command = "";
@@ -41,8 +39,7 @@ void Dbg::UserCommandLine(CommandManager & cm)
 
 		if (cm.CommandExists(command))
 		{
-			cm[command]();
-			lastStrCmd = command;
+			cout << cm[command]() << endl;
 		}
 	} while (_connected);
 }

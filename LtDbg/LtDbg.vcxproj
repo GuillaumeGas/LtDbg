@@ -121,6 +121,7 @@
   <ItemGroup>
     <ClCompile Include="CmdManager.cpp" />
     <ClCompile Include="Com.cpp" />
+    <ClCompile Include="CmdList.cpp" />
     <ClCompile Include="Dbg.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
