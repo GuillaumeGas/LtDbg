@@ -5,6 +5,7 @@
 #include "Com.hpp"
 #include "Exceptions.hpp"
 #include "CmdList.hpp"
+#include "Utils/Registers.hpp"
 
 #include "..\udis\libudis86\extern.h"
 
@@ -26,6 +27,8 @@ string Command::CmdConnect()
 	{
 		return "LtDbg is already connecter to LtKernel !";
 	}
+
+    byte res = 0;
 
 	while (1)
 	{
@@ -59,45 +62,16 @@ string Command::CmdQuit()
 	return EMPTY_RESULT;
 }
 
-/*
-kprint("eax = %x, ebx = %x, ecx = %x, edx = %x\n", context->eax, context->ebx, context->ecx, context->edx);
-kprint("esp = %x, ebp = %x, esi = %x, edi = %x\n", context->esp, context->ebp, context->esi, context->edi);
-kprint("eip = %x", context->eip);
-kprint("gs = %x, fs = %x, es = %x, ds = %x\n", context->gs, context->fs, context->es, context->ds, cs);
-kprint("eflags = %x (%b)\n", context->eflags, context->eflags);
-kprint("cr0 = %x (%b)\n", context->cr0, context->cr0);
-kprint("cr2 = %x (%b)\n", context->cr2, context->cr2);
-kprint("cr3 = %x (%b)\n", context->cr3, context->cr3);
-*/
-
 string Command::CmdRegisters()
 {
 	KDebugContext context = { 0 };
-	stringstream ss;
 
 	_com->SendByte('r');
 	_com->ReadBytes((byte*)&context, sizeof(KDebugContext));
 
-	Registers regs(context);
+	RegistersX86 regs(context);
 
-	ss << "eax = " << std::hex << context.eax << ", ";
-	ss << "ebx = " << std::hex << context.ebx << ", ";
-	ss << "ecx = " << std::hex << context.ecx << ", ";
-	ss << "edx = " << std::hex << context.edx << endl;
-
-	ss << "esp = " << std::hex << context.esp << ", ";
-	ss << "ebp = " << std::hex << context.ebp << ", ";
-	ss << "esi = " << std::hex << context.esi << ", ";
-	ss << "edi = " << std::hex << context.edi << endl;
-
-	ss << "eip = " << std::hex << context.eip << endl;
-
-	ss << "gs = " << std::hex << context.gs << ", ";
-	ss << "fs = " << std::hex << context.fs << ", ";
-	ss << "es = " << std::hex << context.es << ", ";
-	ss << "ds = " << std::hex << context.ds << endl;
-
-	return ss.str();
+    return regs.ToString();
 }
 
 string Command::CmdDisass()
@@ -188,7 +162,7 @@ static std::string LookForSymbol(u32 addr)
 
 string Command::CmdStackTrace()
 {
-	DebugContext context = { 0 };
+	KDebugContext context = { 0 };
 	u32 * buffer = new u32[2 * sizeof(u32)];
 
 	_com->SendByte('s');

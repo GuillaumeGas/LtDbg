@@ -47,7 +47,7 @@ enum RegSizeId
 enum RegTypeId
 {
 	REG_GENERAL,
-	REG_SEGMENT,
+	REG_SELECTOR,
 	REG_INDEX_AND_POINTERS,
 	REG_INDICATOR,
 	REG_CONTROL
@@ -59,7 +59,6 @@ public:
 	virtual std::string ToString() const = 0;
 
 	std::string name;
-	RegId id;
 	RegSizeId sizeId;
 	RegTypeId type;
 };
@@ -67,7 +66,7 @@ public:
 class Reg8 : public Register
 {
 public:
-	Reg8(std::string name, u8 value);
+	Reg8(std::string name, u8 value, RegTypeId typeId);
 
 	std::string ToString() const;
 
@@ -77,7 +76,7 @@ public:
 class Reg16 : public Register
 {
 public:
-	Reg16(std::string name, u16 value);
+	Reg16(std::string name, u16 value, RegTypeId typeId);
 
 	std::string ToString() const;
 
@@ -87,7 +86,7 @@ public:
 class Reg32 : public Register
 {
 public:
-	Reg32(std::string name, u32 value);
+	Reg32(std::string name, u32 value, RegTypeId typeId);
 
 	std::string ToString() const;
 
@@ -97,17 +96,17 @@ public:
 class Reg64 : public Register
 {
 public:
-	Reg64(std::string & name, unsigned long long value);
+	Reg64(std::string name, u64 value, RegTypeId typeId);
 
 	std::string ToString() const;
 
-	unsigned long long value;
+	u64 value;
 };
 
 class RegistersX86
 {
 public:
-	RegistersX86(KDebugContext * kDebugContext);
+	RegistersX86(KeDebugContext & kDebugContext);
 	~RegistersX86();
 
 	std::string ToString() const;
