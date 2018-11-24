@@ -35,7 +35,7 @@ void Com::Connect()
 	}
 }
 
-void Com::SendByte(byte byte)
+void Com::SendByte(unsigned char byte)
 {
 	BOOL success = FALSE;
 	DWORD read = 0;
@@ -48,13 +48,13 @@ void Com::SendByte(byte byte)
 	}
 }
 
-byte Com::ReadByte()
+unsigned char Com::ReadByte()
 {
 	BOOL success = FALSE;
 	DWORD read = 0;
-	byte byte = 0;
+	unsigned char byte = 0;
 
-	success = ReadFile(_pipeHandle, &byte, sizeof(byte), &read, NULL);
+	success = ReadFile(_pipeHandle, &byte, sizeof(unsigned char), &read, NULL);
 
 	if (success == FALSE)
 	{
@@ -64,7 +64,7 @@ byte Com::ReadByte()
 	return byte;
 }
 
-void Com::ReadBytes(byte * buffer, unsigned int bufferSize)
+void Com::ReadBytes(unsigned char * buffer, unsigned int bufferSize)
 {
 	for (unsigned int i = 0; i < bufferSize; i++)
 		buffer[i] = ReadByte();

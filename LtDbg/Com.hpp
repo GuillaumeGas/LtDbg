@@ -10,9 +10,9 @@ public:
 	~Com();
 
 	void Connect();
-	void SendByte(byte byte);
-	byte ReadByte();
-	void ReadBytes(byte * buffer, unsigned int bufferSize);
+	void SendByte(unsigned char byte);
+	unsigned char ReadByte();
+	void ReadBytes(unsigned char * buffer, unsigned int bufferSize);
 
 private:
 	std::string _pipeName;

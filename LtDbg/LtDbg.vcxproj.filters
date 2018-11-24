@@ -42,6 +42,12 @@
     <ClCompile Include="Utils\Registers.cpp">
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\Disass.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\StackTrace.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dbg.hpp">
@@ -63,6 +69,18 @@
       <Filter>Fichiers d%27en-tête\LtKinc</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Registers.hpp">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="LtKinc\types.h">
+      <Filter>Fichiers d%27en-tête\LtKinc</Filter>
+    </ClInclude>
+    <ClInclude Include="LtKinc\ltdbg.h">
+      <Filter>Fichiers d%27en-tête\LtKinc</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Disass.hpp">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\StackTrace.hpp">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
   </ItemGroup>

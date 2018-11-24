@@ -20,12 +20,12 @@ RegistersX86::RegistersX86(KeDebugContext & kDebugContext)
 
 	_regs[REG_EIP] = new Reg32("eip", kDebugContext.eip, REG_INDEX_AND_POINTERS);
 
-	_regs[REG_CS] = new Reg32("cs", kDebugContext.cs, REG_SELECTOR);
-	_regs[REG_DS] = new Reg32("ds", kDebugContext.ds, REG_SELECTOR);
-	_regs[REG_SS] = new Reg32("ss", kDebugContext.ss, REG_SELECTOR);
-	_regs[REG_GS] = new Reg32("gs", kDebugContext.gs, REG_SELECTOR);
-	_regs[REG_FS] = new Reg32("fs", kDebugContext.fs, REG_SELECTOR);
-	_regs[REG_ES] = new Reg32("es", kDebugContext.es, REG_SELECTOR);
+	_regs[REG_CS] = new Reg16("cs", kDebugContext.cs, REG_SELECTOR);
+	_regs[REG_DS] = new Reg16("ds", kDebugContext.ds, REG_SELECTOR);
+	_regs[REG_SS] = new Reg16("ss", kDebugContext.ss, REG_SELECTOR);
+	_regs[REG_GS] = new Reg16("gs", kDebugContext.gs, REG_SELECTOR);
+	_regs[REG_FS] = new Reg16("fs", kDebugContext.fs, REG_SELECTOR);
+	_regs[REG_ES] = new Reg16("es", kDebugContext.es, REG_SELECTOR);
 
 	_regs[REG_EFLAG] = new Reg32("eflag", kDebugContext.eflags, REG_INDICATOR);
 
@@ -69,7 +69,7 @@ string RegistersX86::ToString() const
 	return ss.str();
 }
 
-Reg8::Reg8(string nam, u8 value, RegTypeId typeId) : value(value)
+Reg8::Reg8(string name, u8 value, RegTypeId typeId) : value(value)
 {
 	this->name = name;
 	this->sizeId = REG_8;
@@ -77,10 +77,12 @@ Reg8::Reg8(string nam, u8 value, RegTypeId typeId) : value(value)
 
 string Reg8::ToString() const
 {
-    return name + " = " + std::to_string(value);
+	stringstream ss;
+	ss << name << " = 0x" << std::hex << value;
+    return ss.str();
 }
 
-Reg16::Reg16(string nam, u16 value, RegTypeId typeId) : value(value)
+Reg16::Reg16(string name, u16 value, RegTypeId typeId) : value(value)
 {
     this->name = name;
     this->sizeId = REG_16;
@@ -88,10 +90,12 @@ Reg16::Reg16(string nam, u16 value, RegTypeId typeId) : value(value)
 
 string Reg16::ToString() const
 {
-    return name + " = " + std::to_string(value);
+	stringstream ss;
+	ss << name << " = 0x" << std::hex << value;
+	return ss.str();
 }
 
-Reg32::Reg32(string nam, u32 value, RegTypeId typeId) : value(value)
+Reg32::Reg32(string name, u32 value, RegTypeId typeId) : value(value)
 {
     this->name = name;
     this->sizeId = REG_32;
@@ -99,10 +103,12 @@ Reg32::Reg32(string nam, u32 value, RegTypeId typeId) : value(value)
 
 string Reg32::ToString() const
 {
-    return name + " = " + std::to_string(value);
+	stringstream ss;
+	ss << name << " = 0x" << std::hex << value;
+	return ss.str();
 }
 
-Reg64::Reg64(string nam, u64 value, RegTypeId typeId) : value(value)
+Reg64::Reg64(string name, u64 value, RegTypeId typeId) : value(value)
 {
     this->name = name;
     this->sizeId = REG_64;
@@ -110,5 +116,7 @@ Reg64::Reg64(string nam, u64 value, RegTypeId typeId) : value(value)
 
 string Reg64::ToString() const
 {
-    return name + " = " + std::to_string(value);
+	stringstream ss;
+	ss << name << " = 0x" << std::hex << value;
+	return ss.str();
 }

@@ -14,7 +14,7 @@ class Command;
 class CommandManager
 {
 public:
-	CommandManager(Dbg * dbg, Com * com);
+	CommandManager(Dbg * dbg, Com * com, const char * kernelImagePath);
 	~CommandManager();
 
 	std::function<std::string()> & operator[](CommandId cmd);

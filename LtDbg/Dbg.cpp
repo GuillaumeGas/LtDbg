@@ -17,9 +17,9 @@ Dbg::~Dbg()
 		delete _com;
 }
 
-void Dbg::Start()
+void Dbg::Start(const char * kernelImagePath)
 {
-	CommandManager cmdManager(this, _com);
+	CommandManager cmdManager(this, _com, kernelImagePath);
 
 	_com->Connect();
 

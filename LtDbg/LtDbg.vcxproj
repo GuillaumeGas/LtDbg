@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{EE207E62-D623-4C57-9D66-DF333652F204}</ProjectGuid>
     <RootNamespace>LtDbg</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -85,10 +85,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>C:\Users\guillaume.gas\Documents\prog\c\ltkernel;C:\Users\guillaume.gas\Documents\prog\c\LtDbg\elfio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>LtKinc\;..\elfio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Users\guillaume.gas\Documents\prog\c\LtDbg\udis\BuildVS2010\Build\Bin\x64\libudis86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\udis\BuildVS2010\Build\Bin\x64\libudis86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,7 +125,9 @@
     <ClCompile Include="CmdList.cpp" />
     <ClCompile Include="Dbg.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Utils\Disass.cpp" />
     <ClCompile Include="Utils\Registers.cpp" />
+    <ClCompile Include="Utils\StackTrace.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdList.hpp" />
@@ -133,8 +135,12 @@
     <ClInclude Include="CmdManager.hpp" />
     <ClInclude Include="Dbg.hpp" />
     <ClInclude Include="Exceptions.hpp" />
+    <ClInclude Include="LtKinc\ltdbg.h" />
     <ClInclude Include="LtKinc\ltkinc.h" />
+    <ClInclude Include="LtKinc\types.h" />
+    <ClInclude Include="Utils\Disass.hpp" />
     <ClInclude Include="Utils\Registers.hpp" />
+    <ClInclude Include="Utils\StackTrace.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

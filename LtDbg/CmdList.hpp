@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Utils/Disass.hpp"
+#include "Utils/StackTrace.hpp"
+
 #define COMMANDS_LIST                     \
 	COMMAND(CMD_CONNECT,     "connect")   \
 	COMMAND(CMD_STEP,        "p")         \
@@ -36,7 +39,7 @@ class Com;
 class Command
 {
 public:
-	Command(Dbg * dbg, Com * com);
+	Command(Dbg * dbg, Com * com, const char * kenrelImagePath);
 
 	std::string CmdConnect();
 	std::string CmdStep();
@@ -49,4 +52,6 @@ public:
 private:
 	Dbg * _dbg;
 	Com * _com;
+	Disass _disass;
+	StackTrace _stackTrace;
 };

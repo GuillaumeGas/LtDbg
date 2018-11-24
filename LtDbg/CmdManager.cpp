@@ -9,9 +9,9 @@
 
 using namespace std;
 
-CommandManager::CommandManager(Dbg * dbg, Com * com) : _dbg(dbg), _com(com) 
+CommandManager::CommandManager(Dbg * dbg, Com * com, const char * kernelImagePath) : _dbg(dbg), _com(com) 
 {
-	_cmd = new Command(dbg, com);
+	_cmd = new Command(dbg, com, kernelImagePath);
 
 	_commands[CMD_CONNECT] = std::bind(&Command::CmdConnect, _cmd);
 	_commands[CMD_STEP] = std::bind(&Command::CmdStep, _cmd);

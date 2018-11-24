@@ -4,14 +4,19 @@
 #include "Exceptions.hpp"
 #include "Dbg.hpp"
 
-int main()
+#define DEFAULT_KERNEL_IMAGE_PATH "C:\\Users\\Guillaume\\Documents\\Visual Studio 2017\\Projects\\ltkernel\\iso\\boot\\ltkernel.img"
+
+int main(int argc, char ** argv)
 {
 	bool error = false;
 
 	try
 	{
 		Dbg dbg;
-		dbg.Start();
+		if (argc > 1)
+			dbg.Start(argv[1]);
+		else
+			dbg.Start(DEFAULT_KERNEL_IMAGE_PATH);
 	}
 	catch (const DbgException & exc)
 	{

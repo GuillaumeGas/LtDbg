@@ -10,7 +10,7 @@ public:
 	Dbg();
 	~Dbg();
 
-	void Start();
+	void Start(const char * kernelImagePath);
 	bool GetConnectedState() const;
 	void SetConnectedState(bool state);
 
