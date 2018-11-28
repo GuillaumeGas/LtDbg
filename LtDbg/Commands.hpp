@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Utils/Disass.hpp"
+#include <vector>
+#include <string>
+
+#include "Utils/Disassembler.hpp"
 #include "Utils/StackTrace.hpp"
 
 #define COMMANDS_LIST                     \
@@ -41,17 +44,19 @@ class Command
 public:
 	Command(Dbg * dbg, Com * com, const char * kenrelImagePath);
 
-	std::string CmdConnect();
-	std::string CmdStep();
-	std::string CmdContinue();
-	std::string CmdQuit();
-	std::string CmdRegisters();
-	std::string CmdDisass();
-	std::string CmdStackTrace();
+	std::string CmdConnect(std::vector<std::string> * args);
+	std::string CmdStep(std::vector<std::string> * args);
+	std::string CmdContinue(std::vector<std::string> * args);
+	std::string CmdQuit(std::vector<std::string> * args);
+	std::string CmdRegisters(std::vector<std::string> * args);
+	std::string CmdDisass(std::vector<std::string> * args);
+	std::string CmdStackTrace(std::vector<std::string> * args);
 
 private:
 	Dbg * _dbg;
 	Com * _com;
-	Disass _disass;
+	Disassembler _disass;
 	StackTrace _stackTrace;
+
+	std::string _CmdDisass(unsigned int size);
 };

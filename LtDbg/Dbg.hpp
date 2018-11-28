@@ -2,7 +2,7 @@
 
 #include "Com.hpp"
 #include "CmdManager.hpp"
-#include "CmdList.hpp"
+#include "Commands.hpp"
 
 class Dbg
 {
@@ -16,8 +16,8 @@ public:
 
 private:
 	void UserCommandLine(CommandManager & cm);
+	void HandleInput(CommandManager & cm, std::string & input);
 
 	Com * _com;
-	CommandManager * _cm;
 	bool _connected;
 };

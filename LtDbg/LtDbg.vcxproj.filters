@@ -36,16 +36,19 @@
     <ClCompile Include="CmdManager.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="CmdList.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\Registers.cpp">
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Disass.cpp">
+    <ClCompile Include="Utils\StackTrace.cpp">
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\StackTrace.cpp">
+    <ClCompile Include="Commands.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Disassembler.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\StringUtils.cpp">
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,25 +65,22 @@
     <ClInclude Include="CmdManager.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="CmdList.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="LtKinc\ltkinc.h">
       <Filter>Fichiers d%27en-tête\LtKinc</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Registers.hpp">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="LtKinc\types.h">
-      <Filter>Fichiers d%27en-tête\LtKinc</Filter>
-    </ClInclude>
-    <ClInclude Include="LtKinc\ltdbg.h">
-      <Filter>Fichiers d%27en-tête\LtKinc</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\Disass.hpp">
+    <ClInclude Include="Utils\StackTrace.hpp">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\StackTrace.hpp">
+    <ClInclude Include="Commands.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Disassembler.hpp">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\StringUtils.hpp">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
   </ItemGroup>

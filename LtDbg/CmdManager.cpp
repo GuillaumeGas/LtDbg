@@ -13,13 +13,13 @@ CommandManager::CommandManager(Dbg * dbg, Com * com, const char * kernelImagePat
 {
 	_cmd = new Command(dbg, com, kernelImagePath);
 
-	_commands[CMD_CONNECT] = std::bind(&Command::CmdConnect, _cmd);
-	_commands[CMD_STEP] = std::bind(&Command::CmdStep, _cmd);
-	_commands[CMD_CONTINUE] = std::bind(&Command::CmdContinue, _cmd);
-	_commands[CMD_QUIT] = std::bind(&Command::CmdQuit, _cmd);
-	_commands[CMD_REGISTERS] = std::bind(&Command::CmdRegisters, _cmd);
-	_commands[CMD_DISASS] = std::bind(&Command::CmdDisass, _cmd);
-	_commands[CMD_STACK_TRACE] = std::bind(&Command::CmdStackTrace, _cmd);
+	_commands[CMD_CONNECT] = std::bind(&Command::CmdConnect, _cmd, std::placeholders::_1);
+	_commands[CMD_STEP] = std::bind(&Command::CmdStep, _cmd, std::placeholders::_1);
+	_commands[CMD_CONTINUE] = std::bind(&Command::CmdContinue, _cmd, std::placeholders::_1);
+	_commands[CMD_QUIT] = std::bind(&Command::CmdQuit, _cmd, std::placeholders::_1);
+	_commands[CMD_REGISTERS] = std::bind(&Command::CmdRegisters, _cmd, std::placeholders::_1);
+	_commands[CMD_DISASS] = std::bind(&Command::CmdDisass, _cmd, std::placeholders::_1);
+	_commands[CMD_STACK_TRACE] = std::bind(&Command::CmdStackTrace, _cmd, std::placeholders::_1);
 }
 
 CommandManager::~CommandManager()
@@ -28,12 +28,12 @@ CommandManager::~CommandManager()
 		delete _cmd;
 }
 
-std::function<std::string()> & CommandManager::operator[](CommandId cmd)
+std::function<std::string(std::vector<std::string>*)> & CommandManager::operator[](CommandId cmd)
 {
 	return _commands[cmd];
 }
 
-std::function<std::string()> & CommandManager::operator[](const std::string & str)
+std::function<std::string(std::vector<std::string>*)> & CommandManager::operator[](const std::string & str)
 {
 	CommandId cmd = GetCmdFromStr(str);
 

@@ -44,7 +44,20 @@ void Com::SendByte(unsigned char byte)
 
 	if (success == FALSE)
 	{
-		throw ComException("Com!WriteFile() failed with code " + std::to_string(GetLastError()));
+		throw ComException("SendByte() : Com!WriteFile() failed with code " + std::to_string(GetLastError()));
+	}
+}
+
+void Com::SendBytes(unsigned char * buffer, unsigned int size)
+{
+	BOOL success = FALSE;
+	DWORD read = 0;
+
+	success = WriteFile(_pipeHandle, buffer, size, &read, NULL);
+
+	if (success == FALSE)
+	{
+		throw ComException("SendBytes() : Com!WriteFile() failed with code " + std::to_string(GetLastError()));
 	}
 }
 

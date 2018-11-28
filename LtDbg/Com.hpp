@@ -11,6 +11,7 @@ public:
 
 	void Connect();
 	void SendByte(unsigned char byte);
+	void SendBytes(unsigned char * buffer, unsigned int size);
 	unsigned char ReadByte();
 	void ReadBytes(unsigned char * buffer, unsigned int bufferSize);
 
