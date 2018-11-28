@@ -121,10 +121,15 @@ string Command::_CmdDisass(unsigned int size)
 string Command::CmdStackTrace(vector<string> * args)
 {
 	KeDebugContext context = { 0 };
-	u32 * buffer = new u32[2 * sizeof(u32)];
+	unsigned char * buffer = nullptr;
+	unsigned int bufferSize = 0;
 
 	_com->SendByte(CMD_STACK_TRACE);
-	_com->ReadBytes((unsigned char*)buffer, 2 * sizeof(u32));
+	_com->ReadBytes((unsigned char *)&bufferSize, sizeof(unsigned int));
 
-	return SymbolsHelper::Instance()->Get(buffer, 2);
+	buffer = new unsigned char[bufferSize];
+
+	_com->ReadBytes((unsigned char*)buffer, bufferSize);
+
+	return SymbolsHelper::Instance()->Get((unsigned int *)buffer, bufferSize / sizeof(unsigned int));
 }

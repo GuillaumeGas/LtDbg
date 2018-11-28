@@ -47,10 +47,11 @@ int main(int argc, char ** argv)
 		error = true;
 	}
 
-	std::cout << "Press Enter to exit..." << std::endl;
-	getchar();
-
 	if (error)
+	{
+		std::cout << "Press Enter to exit..." << std::endl;
+		getchar();
 		return -1;
+	}
 	return 0;
 }
