@@ -127,7 +127,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Utils\Disassembler.cpp" />
     <ClCompile Include="Utils\Registers.cpp" />
-    <ClCompile Include="Utils\StackTrace.cpp" />
+    <ClCompile Include="Utils\SymbolsHelper.cpp" />
     <ClCompile Include="Utils\StringUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +139,7 @@
     <ClInclude Include="LtKinc\ltkinc.h" />
     <ClInclude Include="Utils\Disassembler.hpp" />
     <ClInclude Include="Utils\Registers.hpp" />
-    <ClInclude Include="Utils\StackTrace.hpp" />
+    <ClInclude Include="Utils\SymbolsHelper.hpp" />
     <ClInclude Include="Utils\StringUtils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

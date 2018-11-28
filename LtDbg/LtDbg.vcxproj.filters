@@ -39,9 +39,6 @@
     <ClCompile Include="Utils\Registers.cpp">
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\StackTrace.cpp">
-      <Filter>Fichiers sources\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Commands.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -49,6 +46,12 @@
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Utils\StringUtils.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\SymbolsHelper.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\SymbolsHelper.cpp">
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,9 +74,6 @@
     <ClInclude Include="Utils\Registers.hpp">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\StackTrace.hpp">
-      <Filter>Fichiers d%27en-tête\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Commands.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -81,6 +81,9 @@
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\StringUtils.hpp">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SymbolsHelper.hpp">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
   </ItemGroup>

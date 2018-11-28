@@ -21,6 +21,7 @@ V1
 V2
 	- df : disassmble function, désassemble depuis le début par block de 20 inst par exemple
 	  La command 'n' permet, quand elle a été précédée d'un 'df', de demander la suite du code asm
+    - aller chercher le symboles si possible dans le code désassemblé
 */
 
 int main(int argc, char ** argv)

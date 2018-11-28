@@ -1,12 +1,26 @@
 #include <sstream>
 
-#include "StackTrace.hpp"
+#include "SymbolsHelper.hpp"
 
 #include "../Exceptions.hpp"
 
 using namespace ELFIO;
 
-void StackTrace::LoadElf(const std::string & fileName)
+SymbolsHelper * SymbolsHelper::instance = nullptr;
+
+SymbolsHelper::SymbolsHelper() {}
+
+SymbolsHelper * SymbolsHelper::Instance()
+{
+	if (instance == nullptr)
+	{
+		instance = new SymbolsHelper();
+	}
+
+	return instance;
+}
+
+void SymbolsHelper::LoadElf(const std::string & fileName)
 {
 	if (!_reader.load(fileName))
 	{
@@ -14,7 +28,7 @@ void StackTrace::LoadElf(const std::string & fileName)
 	}
 }
 
-std::string StackTrace::Get(unsigned int addresses[], size_t size)
+std::string SymbolsHelper::Get(unsigned int addresses[], size_t size)
 {
 	std::stringstream ss;
 
@@ -26,7 +40,7 @@ std::string StackTrace::Get(unsigned int addresses[], size_t size)
 	return ss.str();
 }
 
-std::string StackTrace::LookForSymbol(unsigned int addr)
+std::string SymbolsHelper::LookForSymbol(unsigned int addr)
 {
 	Elf_Half sec_num = _reader.sections.size();
 	unsigned int max = 0;

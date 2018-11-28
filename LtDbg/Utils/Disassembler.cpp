@@ -1,4 +1,5 @@
 #include "Disassembler.hpp"
+#include "SymbolsHelper.hpp"
 
 #include <sstream>
 
@@ -36,9 +37,9 @@ std::string Disassembler::Disassemble(unsigned int startingAddr, unsigned int nb
 
 	while (ud_disassemble(&_udObj) && i++ < nbInstructions)
 	{
-		ud_mnemonic_code code = ud_insn_mnemonic(&_udObj);
+		ud_mnemonic_code instId = ud_insn_mnemonic(&_udObj);
 		unsigned int instSize = ud_insn_len(&_udObj);
-		if (code != UD_Iinvalid)
+		if (instId != UD_Iinvalid)
 		{
 			if (i == 1)
 			{
@@ -48,7 +49,21 @@ std::string Disassembler::Disassemble(unsigned int startingAddr, unsigned int nb
 			{
 				ss << "    ";
 			}
-			ss << std::hex << startingAddr << " : " << ud_insn_asm(&_udObj) << std::endl;
+
+			ss << std::hex << startingAddr << " : " << ud_insn_asm(&_udObj);
+
+			if (instId == UD_Icall)
+			{
+				const ud_operand_t * operand = ud_insn_opr(&_udObj, 0);
+				unsigned int symAddr = operand->lval.udword + startingAddr + instSize;
+
+				if (operand->type == UD_OP_JIMM)
+				{
+					ss << " (" << SymbolsHelper::Instance()->LookForSymbol(symAddr) << ")";
+				}
+			}
+	
+			ss <<  std::endl;
 		}
 		else
 		{

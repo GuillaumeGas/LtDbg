@@ -4,7 +4,6 @@
 #include <string>
 
 #include "Utils/Disassembler.hpp"
-#include "Utils/StackTrace.hpp"
 
 #define COMMANDS_LIST                     \
 	COMMAND(CMD_CONNECT,     "connect")   \
@@ -56,7 +55,6 @@ private:
 	Dbg * _dbg;
 	Com * _com;
 	Disassembler _disass;
-	StackTrace _stackTrace;
 
 	std::string _CmdDisass(unsigned int size);
 };

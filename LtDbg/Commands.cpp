@@ -6,6 +6,7 @@
 #include "Exceptions.hpp"
 #include "Commands.hpp"
 #include "Utils/Registers.hpp"
+#include "Utils/SymbolsHelper.hpp"
 
 #include "..\elfio\elfio\elfio.hpp"
 #include "..\elfio\elfio\elf_types.hpp"
@@ -19,7 +20,7 @@ using namespace std;
 
 Command::Command(Dbg * dbg, Com * com, const char * kernelImagePath) : _dbg(dbg), _com(com)
 {
-	_stackTrace.LoadElf(kernelImagePath);
+	SymbolsHelper::Instance()->LoadElf(kernelImagePath);
 }
 
 string Command::CmdConnect(vector<string> * args)
@@ -125,5 +126,5 @@ string Command::CmdStackTrace(vector<string> * args)
 	_com->SendByte(CMD_STACK_TRACE);
 	_com->ReadBytes((unsigned char*)buffer, 2 * sizeof(u32));
 
-	return _stackTrace.Get(buffer, 2);
+	return SymbolsHelper::Instance()->Get(buffer, 2);
 }
