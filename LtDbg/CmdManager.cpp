@@ -20,6 +20,7 @@ CommandManager::CommandManager(Dbg * dbg, Com * com, const char * kernelImagePat
 	_commands[CMD_REGISTERS] = std::bind(&Command::CmdRegisters, _cmd, std::placeholders::_1);
 	_commands[CMD_DISASS] = std::bind(&Command::CmdDisass, _cmd, std::placeholders::_1);
 	_commands[CMD_STACK_TRACE] = std::bind(&Command::CmdStackTrace, _cmd, std::placeholders::_1);
+	_commands[CMD_MEMORY] = std::bind(&Command::CmdMemory, _cmd, std::placeholders::_1);
 }
 
 CommandManager::~CommandManager()

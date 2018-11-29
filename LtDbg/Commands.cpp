@@ -85,7 +85,7 @@ string Command::CmdDisass(vector<string> * args)
 
 	if (nbArgs > 1)
 	{
-		return "Too many argments for disassemble command";
+		return "Too many arguments for disassemble command";
 	}
 	else if (nbArgs == 1)
 	{
@@ -132,4 +132,71 @@ string Command::CmdStackTrace(vector<string> * args)
 	_com->ReadBytes((unsigned char*)buffer, bufferSize);
 
 	return SymbolsHelper::Instance()->Get((unsigned int *)buffer, bufferSize / sizeof(unsigned int));
+}
+
+string Command::CmdMemory(vector<string> * args)
+{
+	const unsigned int DEFAULT_NB_BYTES = 50;
+	unsigned int addr = 0;
+	unsigned int size = DEFAULT_NB_BYTES;
+	size_t nbArgs = args->size();
+	unsigned char * buffer = nullptr;
+	stringstream ss;
+	char memoryAccessible = 0;
+	
+	if (nbArgs < 1)
+	{
+		return "Missing argument 'address'";
+	}
+
+	string stringAddr = (*args)[0];
+	if (stringAddr.size() > 2 && stringAddr[0] == '0' && stringAddr[1] == 'x')
+	{
+		addr = std::stoi(stringAddr.substr(2, stringAddr.size()));
+	}
+	else
+	{
+		addr = std::stoi(stringAddr);
+	}
+
+	if (nbArgs > 2)
+	{
+		throw DbgException("Too many arguments for memory command");
+	}
+	else if (nbArgs == 2)
+	{
+		size = std::stoi((*args)[1]);
+	}
+
+	buffer = new unsigned char[size];
+	if (buffer == nullptr)
+	{
+		throw DbgException("CmdMemory() : Can't allocate memory for buffer");
+	}
+
+	_com->SendByte(CMD_MEMORY);
+	_com->SendBytes((unsigned char *)&addr, sizeof(unsigned int));
+	_com->SendBytes((unsigned char *)&size, sizeof(unsigned int));
+
+	memoryAccessible = _com->ReadByte();
+	if (memoryAccessible == 0)
+	{
+		return "<memory not available>";
+	}
+
+	_com->ReadBytes(buffer, size);
+
+	for (unsigned int i = 0; i < size; i++)
+	{
+		if (buffer[i] <= 0xf)
+			ss << std::hex << "0" << (unsigned int)buffer[i] << " ";
+		else
+			ss << std::hex << (unsigned int)buffer[i] << " ";
+		if (i % 10 == 0)
+		{
+			ss << endl;
+		}
+	}
+
+	return ss.str();
 }
