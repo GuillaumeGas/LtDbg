@@ -65,7 +65,7 @@ std::string SymbolsHelper::LookForSymbol(unsigned int addr)
 				symbols.get_symbol(j, name, value, size, bind,
 					type, section_index, other);
 
-				if (!name.empty() && value > max && value < addr)
+				if (!name.empty() && value > max && value <= addr)
 				{
 					max = (unsigned int)value;
 					res = name;
