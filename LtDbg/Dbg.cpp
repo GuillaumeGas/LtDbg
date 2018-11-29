@@ -34,6 +34,8 @@ void Dbg::UserCommandLine(CommandManager & cm)
 {
 	cout << ">> LtKernel Debugger <<" << endl << endl;
 
+    string lastInput = "";
+
 	do
 	{
 		string input = "";
@@ -41,7 +43,15 @@ void Dbg::UserCommandLine(CommandManager & cm)
 		cout << "kd> ";
 		getline(cin, input);
 
-		HandleInput(cm, input);
+        if (input == "")
+        {
+            HandleInput(cm, lastInput);
+        }
+        else
+        {
+            HandleInput(cm, input);
+            lastInput = input;
+        }
 	} 
 	while (_connected);
 }
@@ -58,7 +68,7 @@ void Dbg::HandleInput(CommandManager & cm, string & input)
 	}
 	else
 	{
-		cout << "Unknown command !" << endl;
+		cout << "Unknown command \"" << command << "\" !" << endl;
 	}
 }
 
