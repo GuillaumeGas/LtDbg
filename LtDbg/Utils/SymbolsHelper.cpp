@@ -34,17 +34,20 @@ std::string SymbolsHelper::Get(unsigned int addresses[], size_t size)
 
 	for (unsigned int i = 0; i < size; i++)
 	{
-		ss << std::hex << addresses[i] << " " << LookForSymbol(addresses[i]) << std::endl;
+        SymbolInfo sym = LookForSymbol(addresses[i]);
+        unsigned int offset = addresses[i] - sym.addr;
+		ss << std::hex << addresses[i] << " " << sym.name << "+0x" << std::hex << offset << std::endl;
 	}
 
 	return ss.str();
 }
 
-std::string SymbolsHelper::LookForSymbol(unsigned int addr)
+SymbolInfo SymbolsHelper::LookForSymbol(unsigned int addr)
 {
 	Elf_Half sec_num = _reader.sections.size();
 	unsigned int max = 0;
-	std::string res = "";
+	SymbolInfo res;
+
 	for (int i = 0; i < sec_num; i++)
 	{
 		section * sec = _reader.sections[i];
@@ -68,13 +71,17 @@ std::string SymbolsHelper::LookForSymbol(unsigned int addr)
 				if (!name.empty() && value > max && value <= addr)
 				{
 					max = (unsigned int)value;
-					res = name;
+                    res.name = name;
+                    res.addr = (unsigned int)value;
 				}
 			}
 		}
 	}
 
-	if (res.empty())
-		res = "<symbol not found>";
+    if (res.name.empty())
+    {
+        res.name = "<symbol not found>";
+        res.addr = 0;
+    }
 	return res;
 }
