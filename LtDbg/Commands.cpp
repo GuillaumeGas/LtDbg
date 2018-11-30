@@ -152,11 +152,11 @@ string Command::CmdMemory(vector<string> * args)
 	string stringAddr = (*args)[0];
 	if (stringAddr.size() > 2 && stringAddr[0] == '0' && stringAddr[1] == 'x')
 	{
-		addr = std::stoi(stringAddr.substr(2, stringAddr.size()));
+		addr = std::stoul(stringAddr.substr(2, stringAddr.size()), nullptr, 16);
 	}
 	else
 	{
-		addr = std::stoi(stringAddr);
+		addr = std::stoul(stringAddr, nullptr, 16);
 	}
 
 	if (nbArgs > 2)
