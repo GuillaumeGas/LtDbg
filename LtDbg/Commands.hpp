@@ -14,6 +14,8 @@
 	COMMAND(CMD_DISASS,      "d")		  \
 	COMMAND(CMD_STACK_TRACE, "s")		  \
 	COMMAND(CMD_MEMORY,      "m")		  \
+	COMMAND(CMD_BP,          "bp")        \
+	COMMAND(CMD_BL,          "bl")        \
 	COMMAND(CMD_UNKNOWN,     "<unknown>") \
 	COMMAND(CMD_END,         "<end>" )    \
 
@@ -52,6 +54,8 @@ public:
 	std::string CmdDisass(std::vector<std::string> * args);
 	std::string CmdStackTrace(std::vector<std::string> * args);
 	std::string CmdMemory(std::vector<std::string> * args);
+	std::string CmdBreakpoint(std::vector<std::string> * args);
+	std::string CmdBreakpointList(std::vector<std::string> * args);
 
 private:
 	Dbg * _dbg;

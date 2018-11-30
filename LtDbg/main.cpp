@@ -15,6 +15,14 @@
 		La command 'n' permet, quand elle a été précédée d'un 'df', de demander la suite du code asm
     - m addr [taille] : Par défault, affiche sous forme hexa 50 octets.
 		Avec param, affiche les 'taille' octets.
+
+	- bp addr | symbolName : place un breakpoint en fonction d'une adresse, ou d'un nom de fonction
+	- bd id : désactive un breakpoint
+	- be id : active un breakpoint
+	- bc id : supprime un breakpoint
+	- bl    : renvoie la liste des breakpoints (couple id - addr) 
+	- locals : va chercher les noms et valeurs des variables locales de la frame courante
+
 	- df : disassemble function, désassemble depuis le début par block de 20 inst par exemple
 	    La command 'n' permet, quand elle a été précédée d'un 'df', de demander la suite du code asm
 */

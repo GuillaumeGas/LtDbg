@@ -52,6 +52,8 @@ void Dbg::UserCommandLine(CommandManager & cm)
             HandleInput(cm, input);
             lastInput = input;
         }
+
+		WaitForBreak();
 	} 
 	while (_connected);
 }
@@ -70,6 +72,16 @@ void Dbg::HandleInput(CommandManager & cm, string & input)
 	{
 		cout << "Unknown command \"" << command << "\" !" << endl;
 	}
+}
+
+void Dbg::WaitForBreak()
+{
+	/*char isBp = _com->ReadByte();
+
+	if (isBp)
+	{
+		cout << "Breakpoint reached !" << endl;
+	}*/
 }
 
 bool Dbg::GetConnectedState() const

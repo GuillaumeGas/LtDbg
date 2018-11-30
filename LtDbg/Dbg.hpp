@@ -17,6 +17,7 @@ public:
 private:
 	void UserCommandLine(CommandManager & cm);
 	void HandleInput(CommandManager & cm, std::string & input);
+	void WaitForBreak();
 
 	Com * _com;
 	bool _connected;

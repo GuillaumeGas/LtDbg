@@ -207,3 +207,51 @@ string Command::CmdMemory(vector<string> * args)
 
 	return ss.str();
 }
+
+string Command::CmdBreakpoint(std::vector<std::string> * args)
+{
+	size_t nbArgs = 0;
+	unsigned int addr = 0;
+	string param;
+	stringstream ss;
+	static int breakpointId = 0;
+
+	nbArgs = args->size();
+
+	if (nbArgs != 1)
+	{
+		throw DbgException("Invalid arguments number for breakpoint command");
+	}
+
+	param = (*args)[0];
+	if (param[0] != '0' || param[1] != 'x')
+	{
+		SymbolsHelper::Instance()->GetAddrFromSymbol(param, addr);
+	}
+	else
+	{
+		addr = std::stoul(param.substr(2, param.size()), nullptr, 16);
+	}
+
+	{
+		_com->SendByte(CMD_BP);
+		_com->SendBytes((unsigned char *)&addr, sizeof(unsigned int));
+
+		char success = _com->ReadByte();
+		if (success == 0)
+		{
+			ss << "Failed to set breakpoint on 0x" << std::hex << addr;
+		}
+		else
+		{
+			ss << "Breakpoint " << breakpointId++ << " set on 0x" << std::hex << addr;
+		}
+	}
+
+	return ss.str();
+}
+
+string Command::CmdBreakpointList(std::vector<std::string> * args)
+{
+	return "";
+}

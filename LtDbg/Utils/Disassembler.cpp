@@ -59,7 +59,7 @@ std::string Disassembler::Disassemble(unsigned int startingAddr, unsigned int nb
 
 				if (operand->type == UD_OP_JIMM)
 				{
-					ss << " (" << SymbolsHelper::Instance()->LookForSymbol(symAddr).name << ")";
+					ss << " (" << SymbolsHelper::Instance()->GetSymbolFromAddr(symAddr).name << ")";
 				}
 			}
 	

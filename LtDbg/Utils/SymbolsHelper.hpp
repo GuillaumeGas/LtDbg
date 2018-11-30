@@ -19,7 +19,9 @@ public:
 	void LoadElf(const std::string & fileName);
 	std::string Get(unsigned int addresses[], size_t size);
 
-	SymbolInfo LookForSymbol(unsigned int addr);
+	SymbolInfo GetSymbolFromAddr(unsigned int addr);
+	bool GetAddrFromSymbol(std::string symName, unsigned int & addr);
+
 
 private:
 	SymbolsHelper();
