@@ -137,6 +137,8 @@ string Command::CmdStackTrace(vector<string> * args)
 string Command::CmdMemory(vector<string> * args)
 {
 	const unsigned int DEFAULT_NB_BYTES = 50;
+	const unsigned int NB_BYTES_PER_LINE = 10;
+
 	unsigned int addr = 0;
 	unsigned int size = DEFAULT_NB_BYTES;
 	size_t nbArgs = args->size();
@@ -186,16 +188,21 @@ string Command::CmdMemory(vector<string> * args)
 
 	_com->ReadBytes(buffer, size);
 
+	ss << std::hex << addr << " ";
 	for (unsigned int i = 0; i < size; i++)
 	{
+		if (i % NB_BYTES_PER_LINE == 0 && i != 0)
+		{
+			addr += NB_BYTES_PER_LINE;
+
+			ss << endl;
+			ss << std::hex << addr << " ";
+		}
+
 		if (buffer[i] <= 0xf)
 			ss << std::hex << "0" << (unsigned int)buffer[i] << " ";
 		else
 			ss << std::hex << (unsigned int)buffer[i] << " ";
-		if (i % 10 == 0)
-		{
-			ss << endl;
-		}
 	}
 
 	return ss.str();
