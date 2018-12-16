@@ -82,3 +82,52 @@ void Com::ReadBytes(unsigned char * buffer, unsigned int bufferSize)
 	for (unsigned int i = 0; i < bufferSize; i++)
 		buffer[i] = ReadByte();
 }
+
+KeDebugResponse Com::SendRequest(KeDebugRequest & req)
+{
+	unsigned int size = sizeof(KeDebugRequest) + req.paramSize;
+
+	KeDebugPacket packet;
+	packet.content = new u8[size];
+
+	if (packet.content == nullptr)
+	{
+		throw ComException("SendRequest() failed : couldn't allocate memory for packet content");
+	}
+
+	packet.size = size;
+
+	KeDebugRequest * innerReq = (KeDebugRequest *)packet.content;
+	innerReq->command = req.command;
+	innerReq->paramSize = req.paramSize;
+	CopyMemory(&(innerReq->param), req.param, req.paramSize);
+
+	SendBytes((unsigned char *)&packet.size, sizeof(unsigned int));
+	SendBytes((unsigned char *)packet.content, packet.size);
+
+	return RecvResponse();
+}
+
+KeDebugResponse Com::RecvResponse()
+{
+	KeDebugResponse res;
+
+	ReadBytes((unsigned char *)&res.header, sizeof(KeDebugResponse));
+
+	if (res.header.dataSize > 0)
+	{
+		res.data = new char[res.header.dataSize];
+		if (res.data == nullptr)
+		{
+			throw ComException("RecvResponse() failed : couldn't allocate memory for response data");
+		}
+
+		ReadBytes((unsigned char *)res.data, res.header.dataSize);
+	}
+	else
+	{
+		res.data = nullptr;
+	}
+
+	return res;
+}

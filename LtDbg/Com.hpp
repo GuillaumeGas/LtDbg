@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <string>
 
+#include "LtKinc/ltkinc.h"
+
 class Com
 {
 public:
@@ -10,6 +12,10 @@ public:
 	~Com();
 
 	void Connect();
+
+	KeDebugResponse SendRequest(KeDebugRequest & req);
+	KeDebugResponse RecvResponse();
+
 	void SendByte(unsigned char byte);
 	void SendBytes(unsigned char * buffer, unsigned int size);
 	unsigned char ReadByte();

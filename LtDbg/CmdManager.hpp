@@ -11,23 +11,26 @@
 
 class Dbg;
 class Command;
+struct KeDebugContext;
 
-typedef std::string(CommandFunc)(std::vector<std::string>&);
+typedef DbgResponsePtr(CommandFunc)(std::vector<std::string>&);
 
 class CommandManager
 {
 public:
-	CommandManager(Dbg * dbg, Com * com, const char * kernelImagePath);
+	CommandManager(Dbg * dbg, Com * com, const std::string kernelImagePath);
 	~CommandManager();
 
-	std::function<std::string(std::vector<std::string>*)> & operator[](CommandId cmd);
-	std::function<std::string(std::vector<std::string>*)> & operator[](const std::string & str);
+	std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext *)> & operator[](CommandId cmd);
+	std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext *)> & operator[](const std::string & str);
 	bool CommandExists(const std::string & command) const;
 	bool CommandExists(CommandId command) const;
+
+	void SetSymbolsPath(const std::string symbolsFileName);
 
 private:
 	Dbg * _dbg;
 	Com * _com;
 	Command * _cmd;
-	std::map<CommandId, std::function<std::string(std::vector<std::string>*)> > _commands;
+	std::map<CommandId, std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext*)> > _commands;
 };

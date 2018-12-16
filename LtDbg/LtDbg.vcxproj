@@ -136,7 +136,9 @@
     <ClInclude Include="CmdManager.hpp" />
     <ClInclude Include="Dbg.hpp" />
     <ClInclude Include="Exceptions.hpp" />
+    <ClInclude Include="LtKinc\kernel\debug\ltdbg.h" />
     <ClInclude Include="LtKinc\ltkinc.h" />
+    <ClInclude Include="Response.hpp" />
     <ClInclude Include="Utils\Disassembler.hpp" />
     <ClInclude Include="Utils\Registers.hpp" />
     <ClInclude Include="Utils\SymbolsHelper.hpp" />

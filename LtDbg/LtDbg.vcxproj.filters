@@ -22,6 +22,12 @@
     <Filter Include="Fichiers sources\Utils">
       <UniqueIdentifier>{adc8342b-f092-4723-b67b-de830ae893e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\LtKinc\kernel">
+      <UniqueIdentifier>{8dd453d0-1b64-47ed-ad8f-a573b0371dc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\LtKinc\kernel\debug">
+      <UniqueIdentifier>{1db61ed8-3243-4eac-a5f4-05cb6dd86cd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -85,6 +91,12 @@
     </ClInclude>
     <ClInclude Include="Utils\SymbolsHelper.hpp">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="LtKinc\kernel\debug\ltdbg.h">
+      <Filter>Fichiers d%27en-tête\LtKinc\kernel\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Response.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

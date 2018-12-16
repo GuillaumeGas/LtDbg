@@ -18,16 +18,22 @@
 
 using namespace std;
 
-Command::Command(Dbg * dbg, Com * com, const char * kernelImagePath) : _dbg(dbg), _com(com)
+Command::Command(Dbg * dbg, Com * com, const string kernelImagePath) : _dbg(dbg), _com(com)
 {
-	SymbolsHelper::Instance()->LoadElf(kernelImagePath);
+	SetSymbolsPath(kernelImagePath);
 }
 
-string Command::CmdConnect(vector<string> * args)
+void Command::SetSymbolsPath(const std::string symbolsFileName)
 {
-	if (_dbg->GetConnectedState())
+	SymbolsHelper::Instance()->LoadElf(symbolsFileName.c_str());
+}
+
+DbgResponsePtr Command::CmdConnect(vector<string> * args, KeDebugContext * context)
+{
+	if (_dbg->IsConnected())
 	{
-		return "LtDbg is already connecter to LtKernel !";
+		string msg = "LtDbg is already connecter to LtKernel !";
+		return DbgResponse::New(CMD_CONNECT, STATUS_ALREADY_CONNECTED, msg, context);
 	}
 
     unsigned char res = 0;
@@ -40,44 +46,63 @@ string Command::CmdConnect(vector<string> * args)
 			break;
 	}
 
-	_dbg->SetConnectedState(true);
+	_dbg->IsConnected(true);
 
-	return "Connected to LtKernel !";
+	string msg = "Connected to LtKernel !";
+	return DbgResponse::New(CMD_CONNECT, STATUS_SUCCESS, msg, context);
 }
 
-string Command::CmdStep(vector<string> * args)
+DbgResponsePtr Command::CmdStep(vector<string> * args, KeDebugContext * context)
 {
-	_com->SendByte(CMD_STEP);
+	KeDebugRequest req = { CMD_STEP, 0, nullptr };
 
-	return _CmdDisass(1);
+	KeDebugResponse res = _com->SendRequest(req);
+
+	if (res.header.status == STATUS_SUCCESS)
+	{
+		// 1 instruction à désassembler
+		const unsigned int NB_INST = 1;
+		return _CmdDisass(NB_INST, context);
+	}
+	else
+	{
+		return DbgResponse::New(CMD_STEP, res.header.status, "Step command failed !", context);
+	}
 }
 
-string Command::CmdContinue(vector<string> * args)
+DbgResponsePtr Command::CmdContinue(vector<string> * args, KeDebugContext * context)
 {
-	_com->SendByte(CMD_CONTINUE);
-	return EMPTY_RESULT;
+	KeDebugRequest req = { CMD_CONTINUE, 0, nullptr };
+	KeDebugResponse res = _com->SendRequest(req);
+
+	if (res.header.status == STATUS_SUCCESS)
+	{
+		// TODO : On doit gérer le type d'event qui a fait break le noyau
+		return DbgResponse::New(CMD_CONTINUE, res.header.status, "Kernel broke ! Breakpoint hit ?", context);
+	}
+	else
+	{
+		return DbgResponse::New(CMD_CONTINUE, res.header.status, "Continue command failed !", context);
+	}
 }
 
-string Command::CmdQuit(vector<string> * args)
+DbgResponsePtr Command::CmdQuit(vector<string> * args, KeDebugContext * context)
 {
-	CmdContinue(args);
+	CmdContinue(args, context);
 	_dbg->SetConnectedState(false);
 	return EMPTY_RESULT;
 }
 
-string Command::CmdRegisters(vector<string> * args)
+DbgResponsePtr Command::CmdRegisters(vector<string> * args, KeDebugContext * context)
 {
-	KeDebugContext context = { 0 };
-
 	_com->SendByte(CMD_REGISTERS);
-	_com->ReadBytes((unsigned char*)&context, sizeof(KeDebugContext));
 
-	RegistersX86 regs(context);
+	RegistersX86 regs(*context);
 
     return regs.ToString();
 }
 
-string Command::CmdDisass(vector<string> * args)
+DbgResponsePtr Command::CmdDisass(vector<string> * args, KeDebugContext * context)
 {
 	const unsigned int DEFAULT_NB_INST = 10;
 	unsigned int size = DEFAULT_NB_INST; // x inst to disassemble
@@ -94,10 +119,10 @@ string Command::CmdDisass(vector<string> * args)
 
 	_com->SendByte(CMD_DISASS);
 
-	return _CmdDisass(size);
+	return _CmdDisass(size, context);
 }
 
-string Command::_CmdDisass(unsigned int size)
+DbgResponsePtr Command::_CmdDisass(unsigned int size, KeDebugContext * context)
 {
 	unsigned char * buffer = nullptr;
 	unsigned int startingAddr = 0;
@@ -118,9 +143,8 @@ string Command::_CmdDisass(unsigned int size)
 	return _disass.Disassemble(startingAddr, size);
 }
 
-string Command::CmdStackTrace(vector<string> * args)
+DbgResponsePtr Command::CmdStackTrace(vector<string> * args, KeDebugContext * context)
 {
-	KeDebugContext context = { 0 };
 	unsigned char * buffer = nullptr;
 	unsigned int bufferSize = 0;
 
@@ -134,7 +158,7 @@ string Command::CmdStackTrace(vector<string> * args)
 	return SymbolsHelper::Instance()->Get((unsigned int *)buffer, bufferSize / sizeof(unsigned int));
 }
 
-string Command::CmdMemory(vector<string> * args)
+DbgResponsePtr Command::CmdMemory(vector<string> * args, KeDebugContext * context)
 {
 	const unsigned int DEFAULT_NB_BYTES = 50;
 	const unsigned int NB_BYTES_PER_LINE = 10;
@@ -208,7 +232,7 @@ string Command::CmdMemory(vector<string> * args)
 	return ss.str();
 }
 
-string Command::CmdBreakpoint(std::vector<std::string> * args)
+DbgResponsePtr Command::CmdBreakpoint(std::vector<std::string> * args, KeDebugContext * context)
 {
 	size_t nbArgs = 0;
 	unsigned int addr = 0;
@@ -244,6 +268,10 @@ string Command::CmdBreakpoint(std::vector<std::string> * args)
 		}
 		else
 		{
+			KeBreakpoint bp;
+			bp.addr = addr;
+			bp.id = BP_ENABLED;
+			_dbg->AddBreakpoint(bp);
 			ss << "Breakpoint " << breakpointId++ << " set on 0x" << std::hex << addr;
 		}
 	}
@@ -251,7 +279,7 @@ string Command::CmdBreakpoint(std::vector<std::string> * args)
 	return ss.str();
 }
 
-string Command::CmdBreakpointList(std::vector<std::string> * args)
+DbgResponsePtr Command::CmdBreakpointList(std::vector<std::string> * args, KeDebugContext * context)
 {
 	return "";
 }

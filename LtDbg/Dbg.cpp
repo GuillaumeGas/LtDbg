@@ -3,93 +3,90 @@
 
 #include "Dbg.hpp"
 #include "Utils/StringUtils.hpp"
+#include "Exceptions.hpp"
+
+#include "LtKinc/ltkinc.h"
 
 using namespace std;
 
-const string PIPE_NAME = "\\\\.\\pipe\\ltdbgpipe";
-
-Dbg::Dbg() : _connected(false)
+Dbg::Dbg() : _connected(false), _com(nullptr), _cmdManager(nullptr)
 {
-	_com = new Com(PIPE_NAME);
 }
 
 Dbg::~Dbg()
 {
-	if (_com == nullptr)
+	if (_cmdManager != nullptr)
+		delete _cmdManager;
+
+	if (_com != nullptr)
 		delete _com;
 }
 
-void Dbg::Start(const char * kernelImagePath)
+void Dbg::Connect(const string pipeName)
 {
-	CommandManager cmdManager(this, _com, kernelImagePath);
-
-	_com->Connect();
-
-	cmdManager[CMD_CONNECT](nullptr);
-
-	UserCommandLine(cmdManager);
+	_com = new Com(pipeName);
+	_cmdManager = new CommandManager(this, _com, _symbolsPath);
 }
 
-void Dbg::UserCommandLine(CommandManager & cm)
+DbgResponsePtr Dbg::ExecuteCommand(const string input, KeDebugContext * context)
 {
-	cout << ">> LtKernel Debugger <<" << endl << endl;
+	vector<string> paramsVec = StringUtils::Split(input, ' ');
+	string command = paramsVec[0];
+	paramsVec.erase(paramsVec.begin());
 
-    string lastInput = "";
-
-	do
+	if (_cmdManager->CommandExists(command))
 	{
-		string input = "";
-
-		cout << "kd> ";
-		getline(cin, input);
-
-        if (input == "")
-        {
-            HandleInput(cm, lastInput);
-        }
-        else
-        {
-            HandleInput(cm, input);
-            lastInput = input;
-        }
-
-		WaitForBreak();
-	} 
-	while (_connected);
-}
-
-void Dbg::HandleInput(CommandManager & cm, string & input)
-{
-	vector<string> cmdLine = StringUtils::Split(input, ' ');
-	string command = cmdLine[0];
-	cmdLine.erase(cmdLine.begin());
-
-	if (cm.CommandExists(command))
-	{
-		cout << cm[command](&cmdLine) << endl;
+		return (*_cmdManager)[command](&paramsVec, context);
 	}
 	else
 	{
-		cout << "Unknown command \"" << command << "\" !" << endl;
+		throw UnknownCommandException(command);
 	}
 }
 
-void Dbg::WaitForBreak()
+DbgResponsePtr Dbg::ExecuteCommand(const CommandId commandId, const string params, KeDebugContext * context)
 {
-	/*char isBp = _com->ReadByte();
-
-	if (isBp)
+	vector<string> paramsVec = StringUtils::Split(params, ' ');
+	if (_cmdManager->CommandExists(commandId))
 	{
-		cout << "Breakpoint reached !" << endl;
-	}*/
+		return (*_cmdManager)[commandId](&paramsVec, context);
+	}
+	else
+	{
+		throw UnknownCommandException(commandId);
+	}
 }
 
-bool Dbg::GetConnectedState() const
+void Dbg::SetSymbolsPath(const string symbolsFileName)
+{
+	_symbolsPath = symbolsFileName;
+	_cmdManager->SetSymbolsPath(symbolsFileName);
+}
+
+bool Dbg::IsConnected() const
 {
 	return _connected;
 }
 
-void Dbg::SetConnectedState(bool state)
+void Dbg::IsConnected(bool state)
 {
 	_connected = state;
+}
+
+KeBreakpoint * Dbg::CheckIfBreakpointReached(u32 addr) const
+{
+	for (auto it : _breakpoints)
+	{
+		if (it.addr == addr)
+		{
+			return &it;
+		}
+	}
+
+	return nullptr;
+}
+
+void Dbg::AddBreakpoint(KeBreakpoint bp)
+{
+	_breakpoints.push_back(bp);
 }

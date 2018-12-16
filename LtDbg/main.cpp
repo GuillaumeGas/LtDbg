@@ -3,8 +3,10 @@
 
 #include "Exceptions.hpp"
 #include "Dbg.hpp"
+#include "LtKinc/ltkinc.h"
 
 #define DEFAULT_KERNEL_IMAGE_PATH "C:\\Users\\Guillaume\\Documents\\Visual Studio 2017\\Projects\\ltkernel\\iso\\boot\\ltkernel.img"
+#define PIPE_NAME                 "\\\\.\\pipe\\ltdbgpipe"
 
 /*
 	- p : Mode pas à pas, affiche la prochaine instruction à exécuter
@@ -27,6 +29,48 @@
 	    La command 'n' permet, quand elle a été précédée d'un 'df', de demander la suite du code asm
 */
 
+using namespace std;
+
+static void HandleResponse(DbgResponsePtr res)
+{
+	switch (res->command)
+	{
+	case CMD_DISASS:
+		cout << res->content << endl;
+		break;
+	default:
+		cout << res->content << endl;
+	}
+}
+
+static void CmdDebuggerRoutine(Dbg & dbg, KeDebugContext * firstContext)
+{
+	string lastInput = "";
+	KeDebugContext * context = firstContext;
+
+	do
+	{
+		string input = "";
+		DbgResponsePtr res;
+
+		cout << "kd> ";
+		getline(cin, input);
+
+		if (input == "")
+		{
+			res = dbg.ExecuteCommand(lastInput, context);
+		}
+		else
+		{
+			res = dbg.ExecuteCommand(input);
+			lastInput = input;
+		}
+
+		HandleResponse(res);
+		context = res->context;
+	} while (dbg.IsConnected());
+}
+
 int main(int argc, char ** argv)
 {
 	bool error = false;
@@ -34,10 +78,27 @@ int main(int argc, char ** argv)
 	try
 	{
 		Dbg dbg;
-		if (argc > 1)
-			dbg.Start(argv[1]);
+
+		if (argc > 2)
+			dbg.SetSymbolsPath(argv[2]);
 		else
-			dbg.Start(DEFAULT_KERNEL_IMAGE_PATH);
+			dbg.SetSymbolsPath(DEFAULT_KERNEL_IMAGE_PATH);
+
+		if (argc >= 2)
+			dbg.Connect(argv[1]);
+		else 
+			dbg.Connect(PIPE_NAME);
+
+		DbgResponsePtr res = dbg.ExecuteCommand(CMD_CONNECT);
+		if (res->status != STATUS_SUCCESS)
+		{
+			std::cout << "Connection failed with LtKernel ! (Connect command returned " << res->status << std::endl;
+			return 0;
+		}
+
+		cout << ">> LtKernel Debugger <<" << endl << endl;
+
+		CmdDebuggerRoutine(dbg, res->context);
 	}
 	catch (const DbgException & exc)
 	{

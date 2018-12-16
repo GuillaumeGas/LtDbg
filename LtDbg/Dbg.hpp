@@ -1,8 +1,12 @@
 #pragma once
 
+#include <vector>
+
 #include "Com.hpp"
 #include "CmdManager.hpp"
 #include "Commands.hpp"
+#include "Response.hpp"
+#include "LtKinc/ltkinc.h"
 
 class Dbg
 {
@@ -10,15 +14,21 @@ public:
 	Dbg();
 	~Dbg();
 
-	void Start(const char * kernelImagePath);
-	bool GetConnectedState() const;
-	void SetConnectedState(bool state);
+	void Connect(const std::string pipeName);
+	DbgResponsePtr ExecuteCommand(const std::string input, KeDebugContext * context = nullptr);
+	DbgResponsePtr ExecuteCommand(const CommandId command, const std::string params = "", KeDebugContext * context = nullptr);
+	void SetSymbolsPath(const std::string symbolsFileName);
+
+	bool IsConnected() const;
+	void IsConnected(bool state);
+	void AddBreakpoint(KeBreakpoint bp);
 
 private:
-	void UserCommandLine(CommandManager & cm);
-	void HandleInput(CommandManager & cm, std::string & input);
-	void WaitForBreak();
+	KeBreakpoint * CheckIfBreakpointReached(u32 addr) const;
 
 	Com * _com;
+	CommandManager * _cmdManager;
 	bool _connected;
+	std::vector<KeBreakpoint> _breakpoints;
+	std::string _symbolsPath;
 };
