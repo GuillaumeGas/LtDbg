@@ -80,7 +80,7 @@ DbgResponsePtr Command::CmdContinue(vector<string> * args, KeDebugContext * cont
 		// TODO : On doit gérer le type d'event qui a fait break le noyau
 		return DbgResponse::New(CMD_CONTINUE, res.header.status, "Kernel broke ! Breakpoint hit ?", context);
 	}
-	else
+	else      
 	{
 		return DbgResponse::New(CMD_CONTINUE, res.header.status, "Continue command failed !", context);
 	}

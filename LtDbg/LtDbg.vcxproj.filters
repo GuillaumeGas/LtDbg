@@ -98,5 +98,8 @@
     <ClInclude Include="Response.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="LtKinc\kernel\debug\ltdbgcommands.h">
+      <Filter>Fichiers d%27en-tête\LtKinc\kernel\debug</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

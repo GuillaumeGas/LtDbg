@@ -137,6 +137,7 @@
     <ClInclude Include="Dbg.hpp" />
     <ClInclude Include="Exceptions.hpp" />
     <ClInclude Include="LtKinc\kernel\debug\ltdbg.h" />
+    <ClInclude Include="LtKinc\kernel\debug\ltdbgcommands.h" />
     <ClInclude Include="LtKinc\ltkinc.h" />
     <ClInclude Include="Response.hpp" />
     <ClInclude Include="Utils\Disassembler.hpp" />
