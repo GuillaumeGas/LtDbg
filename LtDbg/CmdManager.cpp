@@ -4,7 +4,6 @@
 #include "Exceptions.hpp"
 #include "Dbg.hpp"
 
-// Includes all LtKernel header files
 #include "LtKinc/ltkinc.h"
 
 using namespace std;

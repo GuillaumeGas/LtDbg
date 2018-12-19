@@ -106,6 +106,7 @@ public:
 class RegistersX86
 {
 public:
+	RegistersX86() {}
 	RegistersX86(KeDebugContext & kDebugContext);
 	~RegistersX86();
 

@@ -3,6 +3,7 @@
 
 #include "Exceptions.hpp"
 #include "Dbg.hpp"
+#include "Response.hpp"
 #include "LtKinc/ltkinc.h"
 
 #define DEFAULT_KERNEL_IMAGE_PATH "C:\\Users\\Guillaume\\Documents\\Visual Studio 2017\\Projects\\ltkernel\\iso\\boot\\ltkernel.img"
@@ -90,7 +91,7 @@ int main(int argc, char ** argv)
 			dbg.Connect(PIPE_NAME);
 
 		DbgResponsePtr res = dbg.ExecuteCommand(CMD_CONNECT);
-		if (res->status != STATUS_SUCCESS)
+		if (res->status != DBG_STATUS_SUCCESS)
 		{
 			std::cout << "Connection failed with LtKernel ! (Connect command returned " << res->status << std::endl;
 			return 0;
