@@ -24,7 +24,8 @@ Command::Command(Dbg * dbg, Com * com, const string kernelImagePath) : _dbg(dbg)
 
 void Command::SetSymbolsPath(const std::string symbolsFileName)
 {
-	SymbolsHelper::Instance()->LoadElf(symbolsFileName.c_str());
+	if (!symbolsFileName.empty())
+		SymbolsHelper::Instance()->LoadElf(symbolsFileName.c_str());
 }
 
 DbgResponsePtr Command::CmdConnect(vector<string> * args, KeDebugContext * context)
@@ -45,10 +46,23 @@ DbgResponsePtr Command::CmdConnect(vector<string> * args, KeDebugContext * conte
 			break;
 	}
 
+	KeDebugRequest req;
+	req.command = CMD_CONNECT;
+	req.paramSize = 0;
+	req.param = nullptr;
+
+	KeDebugResponse response = _com->SendRequest(req);
+
+	if (response.header.status != DBG_STATUS_SUCCESS)
+	{
+		string msg = "Connect command failed !";
+		return DbgResponse::New(CMD_CONNECT, response.header.status, msg, &(response.header.context));
+	}
+
 	_dbg->IsConnected(true);
 
 	string msg = "Connected to LtKernel !";
-	return DbgResponse::New(CMD_CONNECT, DBG_STATUS_SUCCESS, msg, context);
+	return DbgResponse::New(CMD_CONNECT, DBG_STATUS_SUCCESS, msg, &(response.header.context));
 }
 
 DbgResponsePtr Command::CmdStep(vector<string> * args, KeDebugContext * context)

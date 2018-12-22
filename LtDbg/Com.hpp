@@ -13,7 +13,10 @@ public:
 
 	void Connect();
 
-	KeDebugResponse SendRequest(KeDebugRequest & req);
+	void SendPacket(const KeDebugPacket & packet);
+	KeDebugPacket RecvPacket();
+
+	KeDebugResponse SendRequest(const KeDebugRequest & request);
 	KeDebugResponse RecvResponse();
 
 	void SendByte(unsigned char byte);
@@ -22,6 +25,9 @@ public:
 	void ReadBytes(unsigned char * buffer, unsigned int bufferSize);
 
 private:
+	KeDebugPacket MakePacket(const KeDebugRequest & request);
+	void CleanupPacket(KeDebugPacket & packet);
+
 	std::string _pipeName;
 	HANDLE _pipeHandle;
 };

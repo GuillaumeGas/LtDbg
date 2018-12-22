@@ -80,15 +80,15 @@ int main(int argc, char ** argv)
 	{
 		Dbg dbg;
 
-		if (argc > 2)
-			dbg.SetSymbolsPath(argv[2]);
-		else
-			dbg.SetSymbolsPath(DEFAULT_KERNEL_IMAGE_PATH);
-
 		if (argc >= 2)
 			dbg.Connect(argv[1]);
 		else 
 			dbg.Connect(PIPE_NAME);
+
+		if (argc > 2)
+			dbg.SetSymbolsPath(argv[2]);
+		else
+			dbg.SetSymbolsPath(DEFAULT_KERNEL_IMAGE_PATH);
 
 		DbgResponsePtr res = dbg.ExecuteCommand(CMD_CONNECT);
 		if (res->status != DBG_STATUS_SUCCESS)

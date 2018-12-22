@@ -25,6 +25,7 @@ Dbg::~Dbg()
 void Dbg::Connect(const string pipeName)
 {
 	_com = new Com(pipeName);
+	_com->Connect();
 	_cmdManager = new CommandManager(this, _com, _symbolsPath);
 }
 

@@ -83,51 +83,92 @@ void Com::ReadBytes(unsigned char * buffer, unsigned int bufferSize)
 		buffer[i] = ReadByte();
 }
 
-KeDebugResponse Com::SendRequest(KeDebugRequest & req)
+void Com::SendPacket(const KeDebugPacket & packet)
 {
-	unsigned int size = sizeof(KeDebugRequest) + req.paramSize;
-
-	KeDebugPacket packet;
-	packet.content = new u8[size];
-
-	if (packet.content == nullptr)
-	{
-		throw ComException("SendRequest() failed : couldn't allocate memory for packet content");
-	}
-
-	packet.size = size;
-
-	KeDebugRequest * innerReq = (KeDebugRequest *)packet.content;
-	innerReq->command = req.command;
-	innerReq->paramSize = req.paramSize;
-	CopyMemory(&(innerReq->param), req.param, req.paramSize);
-
 	SendBytes((unsigned char *)&packet.size, sizeof(unsigned int));
 	SendBytes((unsigned char *)packet.content, packet.size);
+}
+
+KeDebugPacket Com::RecvPacket()
+{
+	KeDebugPacket packet = { 0 };
+
+	ReadBytes((unsigned char *)&packet.size, sizeof(unsigned int));
+
+	if (packet.size == 0)
+	{
+		packet.content = nullptr;
+		return packet;
+	}
+
+	packet.content = new u8[packet.size];
+	if (packet.content == nullptr)
+	{
+		throw ComException("RecvPacket() : Couldn't allocate memory for packet.content");
+	}
+
+	ReadBytes((unsigned char *)packet.content, packet.size);
+
+	return packet;
+}
+
+KeDebugPacket Com::MakePacket(const KeDebugRequest & request)
+{
+	KeDebugPacket packet = { 0 };
+
+	packet.size = sizeof(KeDebugRequest) + request.paramSize;
+
+	packet.content = new u8[packet.size];
+	if (packet.content == nullptr)
+	{
+		throw ComException("MakePacket() : Couldn't allocate memory for packet.content");
+	}
+
+	std::memcpy(packet.content, &request, sizeof(KeDebugRequest));
+	KeDebugRequest * tmpReq = (KeDebugRequest *)packet.content;
+	std::memcpy(&(tmpReq->param), request.param, request.paramSize);
+
+	return packet;
+}
+
+void Com::CleanupPacket(KeDebugPacket & packet)
+{
+	if (packet.content != nullptr)
+	{
+		delete[] packet.content;
+		packet.content = nullptr;
+	}
+}
+
+KeDebugResponse Com::SendRequest(const KeDebugRequest & request)
+{
+	KeDebugPacket packet = MakePacket(request);
+	SendPacket(packet);
 
 	return RecvResponse();
 }
 
 KeDebugResponse Com::RecvResponse()
 {
-	KeDebugResponse res;
+	KeDebugPacket packet = RecvPacket();
+	KeDebugResponse * dataResponse = (KeDebugResponse *)packet.content;
+	KeDebugResponse response;
 
-	ReadBytes((unsigned char *)&res.header, sizeof(KeDebugResponse));
+	response.header = dataResponse->header;
 
-	if (res.header.dataSize > 0)
+	if (response.header.dataSize > 0)
 	{
-		res.data = new char[res.header.dataSize];
-		if (res.data == nullptr)
+		response.data = new char[response.header.dataSize];
+		if (response.data == nullptr)
 		{
-			throw ComException("RecvResponse() failed : couldn't allocate memory for response data");
+			throw ComException("RecvResponse() : Couldn't allocate memory for response.data");
 		}
 
-		ReadBytes((unsigned char *)res.data, res.header.dataSize);
-	}
-	else
-	{
-		res.data = nullptr;
+		std::memcpy(response.data, &(dataResponse->data), response.header.dataSize);
 	}
 
-	return res;
+	CleanupPacket(packet);
+	dataResponse = nullptr;
+
+	return response;
 }
