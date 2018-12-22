@@ -45,12 +45,18 @@ struct DbgResponse
 
 struct DbgRegistersResponse : public DbgResponse
 {
-	RegistersX86 reg;
+	RegistersX86 * regs;
 
-	DbgRegistersResponse(CommandId command, KeDebugStatus status, std::string content, RegistersX86 registers, KeDebugContext * context) :
+	DbgRegistersResponse(CommandId command, KeDebugStatus status, std::string content, RegistersX86 * registers, KeDebugContext * context) :
 		DbgResponse(command, status, content, context)
 	{
-		this->reg = registers;
+		this->regs = registers;
+	}
+
+	~DbgRegistersResponse()
+	{
+		if (regs != nullptr)
+			delete regs;
 	}
 
 	template<class... Args>

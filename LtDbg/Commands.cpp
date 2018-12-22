@@ -123,8 +123,8 @@ DbgResponsePtr Command::CmdRegisters(vector<string> * args, KeDebugContext * con
 
 	if (res.header.status == DBG_STATUS_SUCCESS)
 	{
-		RegistersX86 regs(res.header.context);
-		return DbgRegistersResponse::New(CMD_REGISTERS, res.header.status, regs.ToString(), regs, &res.header.context);
+		RegistersX86 * regs = new RegistersX86(res.header.context);
+		return DbgRegistersResponse::New(CMD_REGISTERS, res.header.status, regs->ToString(), regs, &res.header.context);
 	}
 	else
 	{
