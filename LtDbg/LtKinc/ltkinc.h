@@ -117,6 +117,18 @@ struct KeDebugRequest
 	char * param;
 } typedef KeDebugRequest;
 
+struct KeDebugDisassParamReq
+{
+	unsigned int nbInst;
+};
+
+struct KeDebugDisassParamRes
+{
+	unsigned int size;
+	unsigned int startingAddress;
+	char * data;
+};
+
 struct KeDebugResponseHeader
 {
 	CommandId command;

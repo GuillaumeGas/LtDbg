@@ -134,46 +134,52 @@ DbgResponsePtr Command::CmdRegisters(vector<string> * args, KeDebugContext * con
 
 DbgResponsePtr Command::CmdDisass(vector<string> * args, KeDebugContext * context)
 {
-	//const unsigned int DEFAULT_NB_INST = 10;
-	//unsigned int size = DEFAULT_NB_INST; // x inst to disassemble
-	//size_t nbArgs = args->size();
+	const unsigned int DEFAULT_NB_INST = 10;
+	unsigned int size = DEFAULT_NB_INST; // x inst to disassemble
+	size_t nbArgs = args->size();
 
-	//if (nbArgs > 1)
-	//{
-	//	return "Too many arguments for disassemble command";
-	//}
-	//else if (nbArgs == 1)
-	//{
-	//	size = (unsigned int)std::stoi((*args)[0]);
-	//}
+	if (nbArgs > 1)
+	{
+		throw DbgException("Too many arguments for Disass command");
+	}
+	else if (nbArgs == 1)
+	{
+		size = (unsigned int)std::stoi((*args)[0]);
+	}
 
-	//_com->SendByte(CMD_DISASS);
-
-	//return _CmdDisass(size, context);
-
-	return DbgResponse::New(CMD_QUIT, DBG_STATUS_SUCCESS, "test", context);
+	return _CmdDisass(size, context);
 }
 
 DbgResponsePtr Command::_CmdDisass(unsigned int size, KeDebugContext * context)
 {
-	//unsigned char * buffer = nullptr;
-	//unsigned int startingAddr = 0;
-	//unsigned int bufferSize = size * DEFAULT_ASM_BUFFER_SIZE;
+	unsigned char * buffer = nullptr;
+	KeDebugRequest request;
+	KeDebugDisassParamReq param = { 0 };
+	KeDebugDisassParamRes * paramRes = nullptr;
 
-	//buffer = new unsigned char[bufferSize];
-	//if (buffer == nullptr)
-	//{
-	//	throw DbgException("_CmdDisass() : Failed to allocate memory for buffer");
-	//}
+	param.nbInst = size;
 
-	//_com->SendBytes((unsigned char *)&size, sizeof(unsigned int));
+	request.command = CMD_DISASS;
+	request.paramSize = sizeof(KeDebugDisassParamReq);
+	request.param = (char *)&param;
 
-	//_com->ReadBytes((unsigned char *)&startingAddr, sizeof(unsigned int));
-	//_com->ReadBytes(buffer, bufferSize);
+	KeDebugResponse response = _com->SendRequest(request);
+	if (response.header.status != DBG_STATUS_SUCCESS)
+	{
+		throw DbgException("_CmdDisass() : SendRequest() failed with dbg status : " + response.header.status);
+	}
 
-	//_disass.SetInputBuffer(buffer, bufferSize);
-	//return _disass.Disassemble(startingAddr, size);
-	return DbgResponse::New(CMD_QUIT, DBG_STATUS_SUCCESS, "test", context);
+	if (response.header.dataSize == 0 || response.data == nullptr)
+	{
+		throw DbgException("_CmdDisass() : unexpected empty data in response");
+	}
+
+	paramRes = (KeDebugDisassParamRes *)response.data;
+
+	_disass.SetInputBuffer((unsigned char *)&paramRes->data, paramRes->size);
+	string asmCode = _disass.Disassemble(paramRes->startingAddress, size);
+
+	return DbgResponse::New(CMD_DISASS, response.header.status, asmCode, &(response.header.context));
 }
 
 DbgResponsePtr Command::CmdStackTrace(vector<string> * args, KeDebugContext * context)
