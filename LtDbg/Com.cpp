@@ -50,14 +50,10 @@ void Com::SendByte(unsigned char byte)
 
 void Com::SendBytes(unsigned char * buffer, unsigned int size)
 {
-	BOOL success = FALSE;
-	DWORD read = 0;
-
-	success = WriteFile(_pipeHandle, buffer, size, &read, NULL);
-
-	if (success == FALSE)
+	for (unsigned int i = 0; i < size; i++)
 	{
-		throw ComException("SendBytes() : Com!WriteFile() failed with code " + std::to_string(GetLastError()));
+		SendByte(buffer[i]);
+		Sleep(5); // Temporisation nécessaire...
 	}
 }
 
@@ -85,7 +81,7 @@ void Com::ReadBytes(unsigned char * buffer, unsigned int bufferSize)
 
 void Com::SendPacket(const KeDebugPacket & packet)
 {
-	SendBytes((unsigned char *)&packet.size, sizeof(unsigned int));
+	SendBytes((unsigned char *)&(packet.size), sizeof(unsigned int));
 	SendBytes((unsigned char *)packet.content, packet.size);
 }
 

@@ -17,6 +17,7 @@ public:
 	void Connect(const std::string pipeName);
 	DbgResponsePtr ExecuteCommand(const std::string input, KeDebugContext * context = nullptr);
 	DbgResponsePtr ExecuteCommand(const CommandId command, const std::string params = "", KeDebugContext * context = nullptr);
+	DbgResponsePtr WaitForBeakpointHit();
 	void SetSymbolsPath(const std::string symbolsFileName);
 
 	bool IsConnected() const;

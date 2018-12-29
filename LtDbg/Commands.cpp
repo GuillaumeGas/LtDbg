@@ -38,9 +38,10 @@ DbgResponsePtr Command::CmdConnect(vector<string> * args, KeDebugContext * conte
 
     unsigned char res = 0;
 
+	_com->SendByte(1);
+
 	while (1)
 	{
-		_com->SendByte(1);
 		unsigned char res = _com->ReadByte();
 		if (res == 1)
 			break;
@@ -71,7 +72,7 @@ DbgResponsePtr Command::CmdStep(vector<string> * args, KeDebugContext * context)
 
 	KeDebugResponse res = _com->SendRequest(req);
 
-	if (res.header.status == DBG_STATUS_SUCCESS)
+	if (res.header.status == DBG_STATUS_BREAKPOINT_REACHED)
 	{
 		// 1 instruction à désassembler
 		const unsigned int NB_INST = 1;
@@ -88,15 +89,17 @@ DbgResponsePtr Command::CmdContinue(vector<string> * args, KeDebugContext * cont
 	KeDebugRequest req = { CMD_CONTINUE, 0, nullptr };
 	KeDebugResponse res = _com->SendRequest(req);
 
-	if (res.header.status == DBG_STATUS_SUCCESS)
+	while (res.header.status != DBG_STATUS_SUCCESS)
 	{
-		// TODO : On doit gérer le type d'event qui a fait break le noyau
-		return DbgResponse::New(CMD_CONTINUE, res.header.status, "Kernel broke ! Breakpoint hit ?", &res.header.context);
+		res = _com->RecvResponse();
+
+		if (res.header.status == DBG_STATUS_SUCCESS)
+		{
+			// TODO : On doit gérer le type d'event qui a fait break le noyau
+			return DbgResponse::New(CMD_CONTINUE, res.header.status, "Kernel broke ! Breakpoint hit ?", &res.header.context);
+		}
 	}
-	else      
-	{
-		return DbgResponse::New(CMD_CONTINUE, res.header.status, "Continue command failed !", context);
-	}
+	return DbgResponse::New(CMD_CONTINUE, res.header.status, "Continue command failed !", context);
 }
 
 DbgResponsePtr Command::CmdQuit(vector<string> * args, KeDebugContext * context)

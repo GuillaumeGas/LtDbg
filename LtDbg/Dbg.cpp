@@ -58,6 +58,12 @@ DbgResponsePtr Dbg::ExecuteCommand(const CommandId commandId, const string param
 	}
 }
 
+DbgResponsePtr Dbg::WaitForBeakpointHit()
+{
+	KeDebugResponse res = _com->RecvResponse();
+	return DbgResponse::New(res.header.command, res.header.status, "Breakpoint hit !", &(res.header.context));
+}
+
 void Dbg::SetSymbolsPath(const string symbolsFileName)
 {
 	_symbolsPath = symbolsFileName;
