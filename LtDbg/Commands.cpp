@@ -184,18 +184,28 @@ DbgResponsePtr Command::_CmdDisass(unsigned int size, KeDebugContext * context)
 
 DbgResponsePtr Command::CmdStackTrace(vector<string> * args, KeDebugContext * context)
 {
-	//unsigned char * buffer = nullptr;
-	//unsigned int bufferSize = 0;
+	KeDebugRequest request;
+	unsigned int * addresses = nullptr;
 
-	//_com->SendByte(CMD_STACK_TRACE);
-	//_com->ReadBytes((unsigned char *)&bufferSize, sizeof(unsigned int));
+	request.command = CMD_STACK_TRACE;
+	request.paramSize = 0;
+	request.param = nullptr;
 
-	//buffer = new unsigned char[bufferSize];
+	KeDebugResponse response = _com->SendRequest(request);
+	if (response.header.status != DBG_STATUS_SUCCESS)
+	{
+		throw DbgException("CmdStackTrace() : SendRequest() failed with dbg status : " + response.header.status);
+	}
 
-	//_com->ReadBytes((unsigned char*)buffer, bufferSize);
+	if (response.header.dataSize == 0 || response.data == nullptr)
+	{
+		throw DbgException("_CmdDisass() : unexpected empty data in response");
+	}
 
-	//return SymbolsHelper::Instance()->Get((unsigned int *)buffer, bufferSize / sizeof(unsigned int));
-	return DbgResponse::New(CMD_QUIT, DBG_STATUS_SUCCESS, "test", context);
+	addresses = (unsigned int *)response.data;
+	string strRes = SymbolsHelper::Instance()->Get((unsigned int *)addresses, response.header.dataSize / sizeof(unsigned int));
+
+	return DbgResponse::New(CMD_QUIT, DBG_STATUS_SUCCESS, strRes, context);
 }
 
 DbgResponsePtr Command::CmdMemory(vector<string> * args, KeDebugContext * context)
