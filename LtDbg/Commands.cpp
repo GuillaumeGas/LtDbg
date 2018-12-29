@@ -89,17 +89,14 @@ DbgResponsePtr Command::CmdContinue(vector<string> * args, KeDebugContext * cont
 	KeDebugRequest req = { CMD_CONTINUE, 0, nullptr };
 	KeDebugResponse res = _com->SendRequest(req);
 
-	while (res.header.status != DBG_STATUS_SUCCESS)
+	while (res.header.status != DBG_STATUS_BREAKPOINT_REACHED)
 	{
+		cout << "test status : " << res.header.status << endl;
 		res = _com->RecvResponse();
-
-		if (res.header.status == DBG_STATUS_SUCCESS)
-		{
-			// TODO : On doit gérer le type d'event qui a fait break le noyau
-			return DbgResponse::New(CMD_CONTINUE, res.header.status, "Kernel broke ! Breakpoint hit ?", &res.header.context);
-		}
 	}
-	return DbgResponse::New(CMD_CONTINUE, res.header.status, "Continue command failed !", context);
+
+	// TODO : On doit gérer le type d'event qui a fait break le noyau
+	return DbgResponse::New(CMD_CONTINUE, res.header.status, "Kernel broke ! Breakpoint hit ?", &res.header.context);
 }
 
 DbgResponsePtr Command::CmdQuit(vector<string> * args, KeDebugContext * context)

@@ -49,16 +49,6 @@ static void CmdDebuggerRoutine(Dbg & dbg, KeDebugContext * firstContext)
 	string lastInput = "";
 	KeDebugContext * context = firstContext;
 
-	DbgResponsePtr bpRes = dbg.WaitForBeakpointHit();
-	if (bpRes->status != DBG_STATUS_BREAKPOINT_REACHED)
-	{
-		throw DbgException("An error occured while waiting for the kernel to break.");
-	}
-	else
-	{
-		HandleResponse(bpRes);
-	}
-
 	do
 	{
 		string input = "";
