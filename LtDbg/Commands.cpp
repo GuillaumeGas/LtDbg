@@ -210,77 +210,75 @@ DbgResponsePtr Command::CmdStackTrace(vector<string> * args, KeDebugContext * co
 
 DbgResponsePtr Command::CmdMemory(vector<string> * args, KeDebugContext * context)
 {
-	//const unsigned int DEFAULT_NB_BYTES = 50;
-	//const unsigned int NB_BYTES_PER_LINE = 10;
+	const unsigned int DEFAULT_NB_BYTES = 50;
+	const unsigned int NB_BYTES_PER_LINE = 10;
 
-	//unsigned int addr = 0;
-	//unsigned int size = DEFAULT_NB_BYTES;
-	//size_t nbArgs = args->size();
-	//unsigned char * buffer = nullptr;
-	//stringstream ss;
-	//char memoryAccessible = 0;
-	//
-	//if (nbArgs < 1)
-	//{
-	//	return "Missing argument 'address'";
-	//}
+	unsigned int addr = 0;
+	unsigned int size = DEFAULT_NB_BYTES;
+	size_t nbArgs = args->size();
+	unsigned char * buffer = nullptr;
+	stringstream ss;
+	
+	if (nbArgs < 1)
+	{
+		return DbgResponse::New(CMD_MEMORY, DBG_STATUS_FAILURE, "Missing argument 'address'", context);
+	}
 
-	//string stringAddr = (*args)[0];
-	//if (stringAddr.size() > 2 && stringAddr[0] == '0' && stringAddr[1] == 'x')
-	//{
-	//	addr = std::stoul(stringAddr.substr(2, stringAddr.size()), nullptr, 16);
-	//}
-	//else
-	//{
-	//	addr = std::stoul(stringAddr, nullptr, 16);
-	//}
+	string stringAddr = (*args)[0];
+	if (stringAddr.size() > 2 && stringAddr[0] == '0' && stringAddr[1] == 'x')
+	{
+		addr = std::stoul(stringAddr.substr(2, stringAddr.size()), nullptr, 16);
+	}
+	else
+	{
+		addr = std::stoul(stringAddr, nullptr, 16);
+	}
 
-	//if (nbArgs > 2)
-	//{
-	//	throw DbgException("Too many arguments for memory command");
-	//}
-	//else if (nbArgs == 2)
-	//{
-	//	size = std::stoi((*args)[1]);
-	//}
+	if (nbArgs > 2)
+	{
+		return DbgResponse::New(CMD_MEMORY, DBG_STATUS_FAILURE, "Too many arguments for memory command", context);
+	}
+	else if (nbArgs == 2)
+	{
+		size = std::stoi((*args)[1]);
+	}
 
-	//buffer = new unsigned char[size];
-	//if (buffer == nullptr)
-	//{
-	//	throw DbgException("CmdMemory() : Can't allocate memory for buffer");
-	//}
+	KeDebugRequest request;
+	KeDebugMemoryParamReq param;
 
-	//_com->SendByte(CMD_MEMORY);
-	//_com->SendBytes((unsigned char *)&addr, sizeof(unsigned int));
-	//_com->SendBytes((unsigned char *)&size, sizeof(unsigned int));
+	param.nbBytes = size;
+	param.startingAddress = addr;
 
-	//memoryAccessible = _com->ReadByte();
-	//if (memoryAccessible == 0)
-	//{
-	//	return "<memory not available>";
-	//}
+	request.command = CMD_MEMORY;
+	request.param = (char *)&param;
+	request.paramSize = sizeof(KeDebugMemoryParamReq);
 
-	//_com->ReadBytes(buffer, size);
+	KeDebugResponse response = _com->SendRequest(request);
+	if (response.header.status != DBG_STATUS_SUCCESS)
+	{
+		return DbgResponse::New(CMD_MEMORY, response.header.status, "Memory command failed", context);
+	}
 
-	//ss << std::hex << addr << " ";
-	//for (unsigned int i = 0; i < size; i++)
-	//{
-	//	if (i % NB_BYTES_PER_LINE == 0 && i != 0)
-	//	{
-	//		addr += NB_BYTES_PER_LINE;
+	buffer = (unsigned char *)response.data;
 
-	//		ss << endl;
-	//		ss << std::hex << addr << " ";
-	//	}
+	ss << std::hex << addr << " ";
+	for (unsigned int i = 0; i < size; i++)
+	{
+		if (i % NB_BYTES_PER_LINE == 0 && i != 0)
+		{
+			addr += NB_BYTES_PER_LINE;
 
-	//	if (buffer[i] <= 0xf)
-	//		ss << std::hex << "0" << (unsigned int)buffer[i] << " ";
-	//	else
-	//		ss << std::hex << (unsigned int)buffer[i] << " ";
-	//}
+			ss << endl;
+			ss << std::hex << addr << " ";
+		}
 
-	//return ss.str();
-	return DbgResponse::New(CMD_QUIT, DBG_STATUS_SUCCESS, "test", context);
+		if (buffer[i] <= 0xf)
+			ss << std::hex << "0" << (unsigned int)buffer[i] << " ";
+		else
+			ss << std::hex << (unsigned int)buffer[i] << " ";
+	}
+
+	return DbgResponse::New(CMD_MEMORY, response.header.status, ss.str(), context);
 }
 
 DbgResponsePtr Command::CmdBreakpoint(std::vector<std::string> * args, KeDebugContext * context)
