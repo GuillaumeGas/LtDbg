@@ -84,9 +84,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\elfio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Users\Guillaume\Documents\Visual Studio 2017\Projects\LtDbg\udis\BuildVS2010\Build\Bin\x64\libudis86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\udis\BuildVS2010\Build\Bin\x64\libudis86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,16 +122,26 @@
   <ItemGroup>
     <ClCompile Include="CmdManager.cpp" />
     <ClCompile Include="Com.cpp" />
+    <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Dbg.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Utils\Disassembler.cpp" />
+    <ClCompile Include="Utils\Registers.cpp" />
+    <ClCompile Include="Utils\SymbolsHelper.cpp" />
+    <ClCompile Include="Utils\StringUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CmdList.hpp" />
+    <ClInclude Include="Commands.hpp" />
     <ClInclude Include="Com.hpp" />
     <ClInclude Include="CmdManager.hpp" />
     <ClInclude Include="Dbg.hpp" />
     <ClInclude Include="Exceptions.hpp" />
     <ClInclude Include="LtKinc\ltkinc.h" />
+    <ClInclude Include="Response.hpp" />
+    <ClInclude Include="Utils\Disassembler.hpp" />
+    <ClInclude Include="Utils\Registers.hpp" />
+    <ClInclude Include="Utils\SymbolsHelper.hpp" />
+    <ClInclude Include="Utils\StringUtils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

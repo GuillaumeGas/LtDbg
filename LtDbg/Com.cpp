@@ -35,7 +35,7 @@ void Com::Connect()
 	}
 }
 
-void Com::SendByte(byte byte)
+void Com::SendByte(unsigned char byte)
 {
 	BOOL success = FALSE;
 	DWORD read = 0;
@@ -44,17 +44,26 @@ void Com::SendByte(byte byte)
 
 	if (success == FALSE)
 	{
-		throw ComException("Com!WriteFile() failed with code " + std::to_string(GetLastError()));
+		throw ComException("SendByte() : Com!WriteFile() failed with code " + std::to_string(GetLastError()));
 	}
 }
 
-byte Com::ReadByte()
+void Com::SendBytes(unsigned char * buffer, unsigned int size)
+{
+	for (unsigned int i = 0; i < size; i++)
+	{
+		SendByte(buffer[i]);
+		Sleep(5); // Temporisation nécessaire...
+	}
+}
+
+unsigned char Com::ReadByte()
 {
 	BOOL success = FALSE;
 	DWORD read = 0;
-	byte byte = 0;
+	unsigned char byte = 0;
 
-	success = ReadFile(_pipeHandle, &byte, sizeof(byte), &read, NULL);
+	success = ReadFile(_pipeHandle, &byte, sizeof(unsigned char), &read, NULL);
 
 	if (success == FALSE)
 	{
@@ -64,8 +73,98 @@ byte Com::ReadByte()
 	return byte;
 }
 
-void Com::ReadBytes(byte * buffer, unsigned int bufferSize)
+void Com::ReadBytes(unsigned char * buffer, unsigned int bufferSize)
 {
 	for (unsigned int i = 0; i < bufferSize; i++)
 		buffer[i] = ReadByte();
+}
+
+void Com::SendPacket(const KeDebugPacket & packet)
+{
+	SendBytes((unsigned char *)&(packet.size), sizeof(unsigned int));
+	SendBytes((unsigned char *)packet.content, packet.size);
+}
+
+KeDebugPacket Com::RecvPacket()
+{
+	KeDebugPacket packet = { 0 };
+
+	ReadBytes((unsigned char *)&packet.size, sizeof(unsigned int));
+
+	if (packet.size == 0)
+	{
+		packet.content = nullptr;
+		return packet;
+	}
+
+	packet.content = new u8[packet.size];
+	if (packet.content == nullptr)
+	{
+		throw ComException("RecvPacket() : Couldn't allocate memory for packet.content");
+	}
+
+	ReadBytes((unsigned char *)packet.content, packet.size);
+
+	return packet;
+}
+
+KeDebugPacket Com::MakePacket(const KeDebugRequest & request)
+{
+	KeDebugPacket packet = { 0 };
+
+	packet.size = sizeof(KeDebugRequest) + request.paramSize;
+
+	packet.content = new u8[packet.size];
+	if (packet.content == nullptr)
+	{
+		throw ComException("MakePacket() : Couldn't allocate memory for packet.content");
+	}
+
+	std::memcpy(packet.content, &request, sizeof(KeDebugRequest));
+	KeDebugRequest * tmpReq = (KeDebugRequest *)packet.content;
+	std::memcpy(&(tmpReq->param), request.param, request.paramSize);
+
+	return packet;
+}
+
+void Com::CleanupPacket(KeDebugPacket & packet)
+{
+	if (packet.content != nullptr)
+	{
+		delete[] packet.content;
+		packet.content = nullptr;
+	}
+}
+
+KeDebugResponse Com::SendRequest(const KeDebugRequest & request)
+{
+	KeDebugPacket packet = MakePacket(request);
+	SendPacket(packet);
+
+	return RecvResponse();
+}
+
+KeDebugResponse Com::RecvResponse()
+{
+	KeDebugPacket packet = RecvPacket();
+	KeDebugResponse * dataResponse = (KeDebugResponse *)packet.content;
+	KeDebugResponse response;
+
+	response.header = dataResponse->header;
+
+	if (response.header.dataSize > 0)
+	{
+		response.data = new char[response.header.dataSize];
+		if (response.data == nullptr)
+		{
+			throw ComException("RecvResponse() : Couldn't allocate memory for response.data");
+		}
+
+		std::memcpy(response.data, &(dataResponse->data), response.header.dataSize);
+	}
+
+	CleanupPacket(packet);
+	dataResponse = nullptr;
+
+	return response;
 }

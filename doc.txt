@@ -1,0 +1,22 @@
+# LtDbg - LtKernel Debugger
+
+
+Le debugging côté noyau fonctionne avec deux interruptions : l'int 3 (breakpoint) et l'int 1 (debug).
+
+Lorsque le mode debug est activé dans le noyau, l'int 3 est déclanchée afin d'attendre la connection du debugger (via le port COM2).
+Une fois cette opération effectuée, le debugger et le noyau peuvent s'échanger des données.
+
+Fonctionnement général : 
+	1) Lorsqu'un interruption intervient (3 ou 1), le noyau envoie un package [EventId | KeDebugContext]
+		L'EventId peut être : DBG_EVENT_BREAKPOINT, SBG_EVENT_STEP (on prévoit d'autres event genre Exception, KernelPanic...)
+		KeDebugContext permet d'avoir le context d'exécution de la tâche qui s'exécutait (pour le moment on a que les registres)
+	
+	2) Le debugger était en attente d'un package. Il demande alors à l'utilisateur l'action à effectuer.
+
+Côté debugger : 
+ - il attend un package : [EventId | KeDebugContext]
+ 
+Détails concernant l'échange de commandes :
+ - Le debugger envoie un couple (identifiant de commande | taille param)
+ - Le noyau reçoit l'identifiant de commande et la taille. Alloue la taille nécessaire pour les param (renvoie un ptr sur un type générique style DbgParameter*)
+   Puis va appeler la fonction correspondant à la commande avec en paramètre le context courant et les paramètres.

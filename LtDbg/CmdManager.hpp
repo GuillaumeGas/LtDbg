@@ -2,31 +2,35 @@
 
 #include <functional>
 #include <map>
+#include <vector>
 
 #include "Com.hpp"
-#include "CmdList.hpp"
+#pragma once
+
+#include "Commands.hpp"
 
 class Dbg;
+class Command;
+struct KeDebugContext;
+
+typedef DbgResponsePtr(CommandFunc)(std::vector<std::string>&);
 
 class CommandManager
 {
 public:
-	CommandManager(Dbg * dbg, Com * com);
+	CommandManager(Dbg * dbg, Com * com, const std::string kernelImagePath);
+	~CommandManager();
 
-	std::function<void()> & operator[](Command cmd);
-	std::function<void()> & operator[](const std::string & str);
+	std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext *)> & operator[](CommandId cmd);
+	std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext *)> & operator[](const std::string & str);
 	bool CommandExists(const std::string & command) const;
-	bool CommandExists(Command command) const;
+	bool CommandExists(CommandId command) const;
 
-	void CmdConnect();
-	void CmdStep();
-	void CmdContinue();
-	void CmdQuit();
-	void CmdRegisters();
-	void CmdDisass();
+	void SetSymbolsPath(const std::string symbolsFileName);
 
 private:
 	Dbg * _dbg;
 	Com * _com;
-	std::map<Command, std::function<void()> > _commands;
+	Command * _cmd;
+	std::map<CommandId, std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext*)> > _commands;
 };
