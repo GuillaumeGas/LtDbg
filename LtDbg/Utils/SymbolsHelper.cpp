@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "SymbolsHelper.hpp"
+#include "ManglingHelper.hpp"
 
 #include "../Exceptions.hpp"
 
@@ -36,7 +37,7 @@ std::string SymbolsHelper::Get(unsigned int addresses[], size_t size)
 	{
         SymbolInfo sym = GetSymbolFromAddr(addresses[i]);
         unsigned int offset = addresses[i] - sym.addr;
-		ss << std::hex << addresses[i] << " " << sym.name << "+0x" << std::hex << offset << std::endl;
+		ss << std::hex << addresses[i] << " " << ManglingHelper::Demangle(sym.name) << "+0x" << std::hex << offset << std::endl;
 	}
 
 	return ss.str();

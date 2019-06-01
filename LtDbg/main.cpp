@@ -6,7 +6,7 @@
 #include "Response.hpp"
 #include "LtKinc/ltkinc.h"
 
-#define DEFAULT_KERNEL_IMAGE_PATH "C:\\Users\\Guillaume\\Documents\\Visual Studio 2017\\Projects\\ltkernel\\iso\\boot\\ltkernel.img"
+#define DEFAULT_KERNEL_IMAGE_PATH "C:\\Users\\Guillaume\\Documents\\Visual Studio 2017\\Projects\\LtMicros\\LtMicros\\iso\\boot\\ltmicros.img"
 #define PIPE_NAME                 "\\\\.\\pipe\\ltdbgpipe"
 
 /*
