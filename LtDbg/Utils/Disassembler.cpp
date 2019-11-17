@@ -1,5 +1,6 @@
 #include "Disassembler.hpp"
 #include "SymbolsHelper.hpp"
+#include "../udis/libudis86/extern.h"
 
 #include <sstream>
 

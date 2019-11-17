@@ -22,6 +22,7 @@ CommandManager::CommandManager(Dbg * dbg, Com * com, const string kernelImagePat
 	_commands[CMD_MEMORY] = std::bind(&Command::CmdMemory, _cmd, std::placeholders::_1, std::placeholders::_2);
 	_commands[CMD_BP] = std::bind(&Command::CmdBreakpoint, _cmd, std::placeholders::_1, std::placeholders::_2);
 	_commands[CMD_BL] = std::bind(&Command::CmdBreakpointList, _cmd, std::placeholders::_1, std::placeholders::_2);
+    _commands[CMD_IDT] = std::bind(&Command::CmdIdt, _cmd, std::placeholders::_1, std::placeholders::_2);
 }
 
 CommandManager::~CommandManager()

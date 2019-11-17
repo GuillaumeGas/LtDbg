@@ -10,6 +10,9 @@
 class Dbg;
 class Com;
 
+struct DbgResponse;
+typedef std::shared_ptr<DbgResponse> DbgResponsePtr;
+
 class Command
 {
 public:
@@ -25,6 +28,7 @@ public:
 	DbgResponsePtr CmdMemory(std::vector<std::string> * args, KeDebugContext * context);
 	DbgResponsePtr CmdBreakpoint(std::vector<std::string> * args, KeDebugContext * context);
 	DbgResponsePtr CmdBreakpointList(std::vector<std::string> * args, KeDebugContext * context);
+    DbgResponsePtr CmdIdt(std::vector<std::string> * args, KeDebugContext * context);
 
 	void SetSymbolsPath(const std::string symbolsFileName);
 

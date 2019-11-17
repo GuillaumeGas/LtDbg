@@ -6,6 +6,8 @@
 #define KDBG_RESPONSE_WITHOUT_CONTEXT 1
 #define KDBG_RESPONSE_WITH_CONTEXT    2
 
+#include <string>
+
 #define COMMANDS_LIST                     \
 	COMMAND(CMD_CONNECT,     "connect")   \
 	COMMAND(CMD_STEP,        "p")         \
@@ -17,6 +19,7 @@
 	COMMAND(CMD_MEMORY,      "m")		  \
 	COMMAND(CMD_BP,          "bp")        \
 	COMMAND(CMD_BL,          "bl")        \
+	COMMAND(CMD_IDT,         "idt")       \
 	COMMAND(CMD_UNKNOWN,     "<unknown>") \
 	COMMAND(CMD_END,         "<end>" )    \
 
@@ -150,3 +153,21 @@ struct KeDebugResponse
 	KeDebugResponseHeader header;
 	char * data;
 } typedef KeDebugResponse;
+
+/// @brief Represents an IDT entry, called an Idt descriptor
+#pragma pack(push,1)
+struct IdtDescriptor
+{
+    /// @brief Bits 0 to 15 of the interrupt function's offset
+    u16 offset0_15;
+    /// @brief A code segment selector in GDT or LDT
+    u16 selector;
+    /// @brief Example : P D P L . 0 1 1 1 . 0 0 0 x . x x x x
+    ///        P   : The segment is present in memory (1) or not (0)
+    ///        DPL : Specified which privilege level the calling descriptor minimum should have
+    ///        x   : unsed bits
+    u16 type;
+    /// @brief Bits 16 to 31 of the interrupt function's offset
+    u16 offset16_31;
+};
+#pragma pack(pop)

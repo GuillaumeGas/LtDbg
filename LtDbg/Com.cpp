@@ -1,5 +1,6 @@
-#include "Com.hpp"
+#include <cstring>
 
+#include "Com.hpp"
 #include "Exceptions.hpp"
 
 using namespace std;

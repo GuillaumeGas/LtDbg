@@ -7,6 +7,7 @@
 #include "Commands.hpp"
 #include "Utils/Registers.hpp"
 #include "Utils/SymbolsHelper.hpp"
+#include "Utils/IdtUtils.hpp"
 
 #include "..\elfio\elfio\elfio.hpp"
 #include "..\elfio\elfio\elf_types.hpp"
@@ -332,4 +333,20 @@ DbgResponsePtr Command::CmdBreakpoint(std::vector<std::string> * args, KeDebugCo
 DbgResponsePtr Command::CmdBreakpointList(std::vector<std::string> * args, KeDebugContext * context)
 {
 	return DbgResponse::New(CMD_QUIT, DBG_STATUS_SUCCESS, "test", context);
+}
+
+DbgResponsePtr Command::CmdIdt(vector<string> * args, KeDebugContext * context)
+{
+    KeDebugRequest req = { CMD_IDT, 0, nullptr };
+    KeDebugResponse res = _com->SendRequest(req);
+
+    if (res.header.status == DBG_STATUS_SUCCESS)
+    {
+        string idtContent = IdtUtils::Interpret((IdtDescriptor*)res.data, res.header.dataSize);
+        return DbgResponse::New(CMD_IDT, DBG_STATUS_SUCCESS, idtContent, context);
+    }
+    else
+    {
+        return DbgResponse::New(CMD_REGISTERS, res.header.status, "Registers command failed !", context);
+    }
 }
