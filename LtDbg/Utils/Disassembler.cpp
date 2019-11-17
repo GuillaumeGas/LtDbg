@@ -1,5 +1,6 @@
 #include "Disassembler.hpp"
 #include "SymbolsHelper.hpp"
+#include "ManglingHelper.hpp"
 #include "../udis/libudis86/extern.h"
 
 #include <sstream>
@@ -60,7 +61,7 @@ std::string Disassembler::Disassemble(unsigned int startingAddr, unsigned int nb
 
 				if (operand->type == UD_OP_JIMM)
 				{
-					ss << " (" << SymbolsHelper::Instance()->GetSymbolFromAddr(symAddr).name << ")";
+					ss << " (" << ManglingHelper::Demangle(SymbolsHelper::Instance()->GetSymbolFromAddr(symAddr).name) << ")";
 				}
 			}
 	
