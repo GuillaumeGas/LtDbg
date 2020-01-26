@@ -9,8 +9,8 @@
 #include "Utils/SymbolsHelper.hpp"
 #include "Utils/IdtUtils.hpp"
 
-#include "..\elfio\elfio\elfio.hpp"
-#include "..\elfio\elfio\elf_types.hpp"
+#include "LtDbg\elfio\elfio\elfio.hpp"
+#include "LtDbg\elfio\elfio\elf_types.hpp"
 
 #include "LtKinc/ltkinc.h"
 
@@ -18,15 +18,8 @@
 
 using namespace std;
 
-Command::Command(Dbg * dbg, Com * com, const string kernelImagePath) : _dbg(dbg), _com(com)
+Command::Command(Dbg * dbg, Com * com) : _dbg(dbg), _com(com)
 {
-	SetSymbolsPath(kernelImagePath);
-}
-
-void Command::SetSymbolsPath(const std::string symbolsFileName)
-{
-	if (!symbolsFileName.empty())
-		SymbolsHelper::Instance()->LoadElf(symbolsFileName.c_str());
 }
 
 DbgResponsePtr Command::CmdConnect(vector<string> * args, KeDebugContext * context)
@@ -94,10 +87,12 @@ DbgResponsePtr Command::CmdContinue(vector<string> * args, KeDebugContext * cont
 	{
 		cout << "test status : " << res.header.status << endl;
 		res = _com->RecvResponse();
-	}
+    }
+
+    string message = "Kernel broke in " + string(res.header.processName);
 
 	// TODO : On doit gérer le type d'event qui a fait break le noyau
-	return DbgResponse::New(CMD_CONTINUE, res.header.status, "Kernel broke ! Breakpoint hit ?", &res.header.context);
+    return DbgResponse::New(CMD_CONTINUE, res.header.status, message, &res.header.context);
 }
 
 DbgResponsePtr Command::CmdQuit(vector<string> * args, KeDebugContext * context)
@@ -178,7 +173,7 @@ DbgResponsePtr Command::_CmdDisass(unsigned int size, KeDebugContext * context)
 	paramRes = (KeDebugDisassParamRes *)response.data;
 
 	_disass.SetInputBuffer((unsigned char *)&paramRes->data, paramRes->size);
-	string asmCode = _disass.Disassemble(paramRes->startingAddress, size);
+    string asmCode = _disass.Disassemble(response.header.processName, paramRes->startingAddress, size);
 
 	return DbgResponse::New(CMD_DISASS, response.header.status, asmCode, &(response.header.context));
 }
@@ -204,7 +199,7 @@ DbgResponsePtr Command::CmdStackTrace(vector<string> * args, KeDebugContext * co
 	}
 
 	addresses = (unsigned int *)response.data;
-	string strRes = SymbolsHelper::Instance()->Get((unsigned int *)addresses, response.header.dataSize / sizeof(unsigned int));
+    string strRes = SymbolsHelper::Instance()->Get(response.header.processName, (unsigned int *)addresses, response.header.dataSize / sizeof(unsigned int));
 
 	return DbgResponse::New(CMD_QUIT, DBG_STATUS_SUCCESS, strRes, context);
 }

@@ -126,8 +126,6 @@
     <ClCompile Include="Dbg.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Utils\Disassembler.cpp" />
-    <ClCompile Include="Utils\idtutils.cpp" />
-    <ClCompile Include="Utils\ManglingHelper.cpp" />
     <ClCompile Include="Utils\Registers.cpp" />
     <ClCompile Include="Utils\SymbolsHelper.cpp" />
     <ClCompile Include="Utils\StringUtils.cpp" />
@@ -141,8 +139,6 @@
     <ClInclude Include="LtKinc\ltkinc.h" />
     <ClInclude Include="Response.hpp" />
     <ClInclude Include="Utils\Disassembler.hpp" />
-    <ClInclude Include="Utils\IdtUtils.hpp" />
-    <ClInclude Include="Utils\ManglingHelper.hpp" />
     <ClInclude Include="Utils\Registers.hpp" />
     <ClInclude Include="Utils\SymbolsHelper.hpp" />
     <ClInclude Include="Utils\StringUtils.hpp" />

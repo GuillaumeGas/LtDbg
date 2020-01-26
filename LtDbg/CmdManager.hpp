@@ -18,7 +18,7 @@ typedef DbgResponsePtr(CommandFunc)(std::vector<std::string>&);
 class CommandManager
 {
 public:
-	CommandManager(Dbg * dbg, Com * com, const std::string kernelImagePath);
+    CommandManager(Dbg * dbg, Com * com);
 	~CommandManager();
 
 	std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext *)> & operator[](CommandId cmd);
@@ -26,7 +26,7 @@ public:
 	bool CommandExists(const std::string & command) const;
 	bool CommandExists(CommandId command) const;
 
-	void SetSymbolsPath(const std::string symbolsFileName);
+    void SetSymbolsPaths(const std::vector<std::string> symbolsFilePaths);
 
 private:
 	Dbg * _dbg;

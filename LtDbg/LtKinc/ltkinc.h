@@ -1,12 +1,12 @@
 #pragma once
 
+#include <string>
+
 #define DEFAULT_ASM_BUFFER_SIZE 20
 
 #define KDBG_RESPONSE_FAILURE         0
 #define KDBG_RESPONSE_WITHOUT_CONTEXT 1
 #define KDBG_RESPONSE_WITH_CONTEXT    2
-
-#include <string>
 
 #define COMMANDS_LIST                     \
 	COMMAND(CMD_CONNECT,     "connect")   \
@@ -19,7 +19,7 @@
 	COMMAND(CMD_MEMORY,      "m")		  \
 	COMMAND(CMD_BP,          "bp")        \
 	COMMAND(CMD_BL,          "bl")        \
-	COMMAND(CMD_IDT,         "idt")       \
+    COMMAND(CMD_IDT,         "idt")       \
 	COMMAND(CMD_UNKNOWN,     "<unknown>") \
 	COMMAND(CMD_END,         "<end>" )    \
 
@@ -145,6 +145,7 @@ struct KeDebugResponseHeader
 	CommandId command;
 	KeDebugStatus status;
 	KeDebugContext context;
+    char processName[512];
 	unsigned int dataSize;
 } typedef KeDebugResponseHeader;
 
@@ -155,7 +156,6 @@ struct KeDebugResponse
 } typedef KeDebugResponse;
 
 /// @brief Represents an IDT entry, called an Idt descriptor
-#pragma pack(push,1)
 struct IdtDescriptor
 {
     /// @brief Bits 0 to 15 of the interrupt function's offset
@@ -169,5 +169,4 @@ struct IdtDescriptor
     u16 type;
     /// @brief Bits 16 to 31 of the interrupt function's offset
     u16 offset16_31;
-};
-#pragma pack(pop)
+} __attribute__((packed));

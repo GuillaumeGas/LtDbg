@@ -3,14 +3,15 @@
 #include "CmdManager.hpp"
 #include "Exceptions.hpp"
 #include "Dbg.hpp"
+#include "Utils/SymbolsHelper.hpp"
 
 #include "LtKinc/ltkinc.h"
 
 using namespace std;
 
-CommandManager::CommandManager(Dbg * dbg, Com * com, const string kernelImagePath) : _dbg(dbg), _com(com) 
+CommandManager::CommandManager(Dbg * dbg, Com * com) : _dbg(dbg), _com(com)
 {
-	_cmd = new Command(dbg, com, kernelImagePath);
+    _cmd = new Command(dbg, com);
 
 	_commands[CMD_CONNECT] = std::bind(&Command::CmdConnect, _cmd, std::placeholders::_1, std::placeholders::_2);
 	_commands[CMD_STEP] = std::bind(&Command::CmdStep, _cmd, std::placeholders::_1, std::placeholders::_2);
@@ -41,7 +42,7 @@ std::function<DbgResponsePtr(std::vector<std::string>*, KeDebugContext *)> & Com
 	CommandId cmd = GetCmdFromStr(str);
 
 	if (cmd == CMD_UNKNOWN)
-		throw DbgException("Unknwo command !");
+        throw DbgException("Unknown command !");
 
 	if (!CommandExists(cmd))
 		throw DbgException("Not implemented command !");
@@ -64,7 +65,7 @@ bool CommandManager::CommandExists(CommandId command) const
 	return _commands.find(command) != _commands.end();
 }
 
-void CommandManager::SetSymbolsPath(const std::string symbolsFileName)
+void CommandManager::SetSymbolsPaths(const std::vector<std::string> symbolsFilePaths)
 {
-	_cmd->SetSymbolsPath(symbolsFileName);
+    SymbolsHelper::Instance()->LoadSymbolsFromFiles(symbolsFilePaths);
 }

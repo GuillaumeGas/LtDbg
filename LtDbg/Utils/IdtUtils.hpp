@@ -1,7 +1,7 @@
 #ifndef IDTUTILS_H
 #define IDTUTILS_H
 
-#include "../LtDbg/LtKinc/ltkinc.h"
+#include "LtDbg/LtDbg/LtKinc/ltkinc.h"
 
 class IdtUtils
 {

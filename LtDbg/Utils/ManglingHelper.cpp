@@ -1,5 +1,7 @@
 #include "ManglingHelper.hpp"
 
+#include <cstring>
+
 using namespace std;
 
 string ManglingHelper::Demangle(const string & mangledName)

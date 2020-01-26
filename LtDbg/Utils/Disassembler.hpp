@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "..\udis\libudis86\extern.h"
+#include "LtDbg\udis\libudis86\extern.h"
 
 class Disassembler
 {
@@ -13,7 +13,7 @@ public:
 	void SetMode(unsigned char mode);
 	void SetSyntax(void(*)(struct ud*));
 
-	std::string Disassemble(unsigned int startingAddr, unsigned int nbInstructions);
+    std::string Disassemble(const char * binaryName, unsigned int startingAddr, unsigned int nbInstructions);
 	// std::string Disassemble(int length);
 	// std::string Disassemble(int length1, int length2);
 

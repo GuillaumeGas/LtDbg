@@ -1,9 +1,10 @@
 #pragma once
 
 #include <string>
+#include <map>
 
-#include "..\elfio\elfio\elfio.hpp"
-#include "..\elfio\elfio\elf_types.hpp"
+#include "LtDbg\elfio\elfio\elfio.hpp"
+#include "LtDbg\elfio\elfio\elf_types.hpp"
 
 struct SymbolInfo
 {
@@ -16,16 +17,18 @@ class SymbolsHelper
 public:
 	static SymbolsHelper * Instance();
 
-	void LoadElf(const std::string & fileName);
-	std::string Get(unsigned int addresses[], size_t size);
+    void LoadSymbolsFromFiles(const std::vector<std::string> & filePaths);
+    std::string Get(const char * binaryName, unsigned int addresses[], size_t size);
 
-	SymbolInfo GetSymbolFromAddr(unsigned int addr);
-	bool GetAddrFromSymbol(std::string symName, unsigned int & addr);
+    SymbolInfo GetSymbolFromAddr(const char * binaryName, unsigned int addr);
+    bool GetAddrFromSymbol(const char * binaryName, std::string symName, unsigned int & addr);
 
 
 private:
 	SymbolsHelper();
 	static SymbolsHelper * instance;
 
-	ELFIO::elfio _reader;
+    void ClearReader();
+
+    std::map<std::string, ELFIO::elfio*> _reader;
 };

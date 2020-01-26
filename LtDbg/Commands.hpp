@@ -16,7 +16,7 @@ typedef std::shared_ptr<DbgResponse> DbgResponsePtr;
 class Command
 {
 public:
-	Command(Dbg * dbg, Com * com, const std::string kenrelImagePath);
+    Command(Dbg * dbg, Com * com);
 
 	DbgResponsePtr CmdConnect(std::vector<std::string> * args, KeDebugContext * context);
 	DbgResponsePtr CmdStep(std::vector<std::string> * args, KeDebugContext * context);
@@ -29,8 +29,6 @@ public:
 	DbgResponsePtr CmdBreakpoint(std::vector<std::string> * args, KeDebugContext * context);
 	DbgResponsePtr CmdBreakpointList(std::vector<std::string> * args, KeDebugContext * context);
     DbgResponsePtr CmdIdt(std::vector<std::string> * args, KeDebugContext * context);
-
-	void SetSymbolsPath(const std::string symbolsFileName);
 
 private:
 	Dbg * _dbg;

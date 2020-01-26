@@ -17,7 +17,7 @@ public:
 	void Connect(const std::string pipeName);
 	DbgResponsePtr ExecuteCommand(const std::string input, KeDebugContext * context = nullptr);
 	DbgResponsePtr ExecuteCommand(const CommandId command, const std::string params = "", KeDebugContext * context = nullptr);
-	void SetSymbolsPath(const std::string symbolsFileName);
+    void SetSymbolsPaths(const std::vector<std::string> symbolsFilePaths);
 
 	bool IsConnected() const;
 	void IsConnected(bool state);
@@ -30,5 +30,5 @@ private:
 	CommandManager * _cmdManager;
 	bool _connected;
 	std::vector<KeBreakpoint> _breakpoints;
-	std::string _symbolsPath;
+    std::vector<std::string> _symbolsPaths;
 };

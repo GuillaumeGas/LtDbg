@@ -18,3 +18,8 @@ vector<string> StringUtils::Split(string str, char delimiter)
     }
 	return res;
 }
+
+string StringUtils::GetFileNameFromPath(const string & path)
+{
+    return path.substr(path.find_last_of('/') + 1, path.length());
+}

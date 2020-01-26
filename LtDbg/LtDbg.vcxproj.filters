@@ -60,12 +60,6 @@
     <ClCompile Include="Utils\SymbolsHelper.cpp">
       <Filter>Fichiers sources\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\idtutils.cpp">
-      <Filter>Fichiers sources\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\ManglingHelper.cpp">
-      <Filter>Fichiers sources\Utils</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dbg.hpp">
@@ -100,12 +94,6 @@
     </ClInclude>
     <ClInclude Include="Response.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\IdtUtils.hpp">
-      <Filter>Fichiers d%27en-tête\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\ManglingHelper.hpp">
-      <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

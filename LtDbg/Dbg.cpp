@@ -26,7 +26,7 @@ void Dbg::Connect(const string pipeName)
 {
 	_com = new Com(pipeName);
 	_com->Connect();
-	_cmdManager = new CommandManager(this, _com, _symbolsPath);
+    _cmdManager = new CommandManager(this, _com);
 }
 
 DbgResponsePtr Dbg::ExecuteCommand(const string input, KeDebugContext * context)
@@ -58,10 +58,10 @@ DbgResponsePtr Dbg::ExecuteCommand(const CommandId commandId, const string param
 	}
 }
 
-void Dbg::SetSymbolsPath(const string symbolsFileName)
+void Dbg::SetSymbolsPaths(const std::vector<std::string> symbolsFilePaths)
 {
-	_symbolsPath = symbolsFileName;
-	_cmdManager->SetSymbolsPath(symbolsFileName);
+    _symbolsPaths = symbolsFilePaths;
+    _cmdManager->SetSymbolsPaths(symbolsFilePaths);
 }
 
 bool Dbg::IsConnected() const
