@@ -1,9 +1,10 @@
 # LtDbg
-Debugger pour le noyau LtKernel
+LtMicros kernel debugger.
 
-# Commandes
- - r : affiche les registres
- - d : désassemble
- - s : affiche la stack trace
- - p : exécute l'instruction suivante (step mode)
- - c : continue l'exécution
+# Commands
+ - r : prints registers
+ - d : disassembles at current/given address
+ - s : print the stack trace
+ - p : step mode
+ - c : continue execution
+ - idt : prints the idt (Interrupt Descriptors table)
